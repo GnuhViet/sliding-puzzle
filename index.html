@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .puzzle {
+            display: grid;
+            /* grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px); */
+            width: 300px;
+            height: 300px;
+        }
+
+        .puzzle-item {
+            width: 100px;
+            height: 100px;
+            border: 1px solid black;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #game {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="menu">
+        <button class="button" onclick="showGame()">Play</button>
+        <button class="button">Button 2</button>
+        <button class="button">Button 3</button>
+        <input type="text" id="size" value="3" min="3">
+    </div>
+
+    <div id="game">
+        <input type="file" id="imageLoader" name="imageLoader" />
+        <div class="puzzle" id="puzzle"></div>
+    </div>
+
+    <script>
+        var gameSize = null;
+
+        document.getElementById('imageLoader').addEventListener('change', handleImage, false);
+
+        function showGame() {
+            var game = document.getElementById("game");
+            var menu = document.getElementById("menu");
+            game.style.display = "block";
+            menu.style.display = "none";
+            gameSize = parseInt(document.getElementById("size").value);
+
+            const puzzle = document.querySelector('.puzzle');
+            puzzle.style.gridTemplateColumns = `repeat(${gameSize}, ${300 / gameSize}px)`;
+            puzzle.style.gridTemplateRows = `repeat(${gameSize}, ${300 / gameSize}px)`;
+        }
+
+        function getItemNumber(x) {
+            res = null;
+            x.classList.forEach(function (item) {
+                if (item.startsWith("item-number-")) {
+                    res = item.split("-")[2];
+                }
+            })
+            return res
+        }
+
+        function swapItem(a, b) {
+            let tiles = document.getElementById('puzzle').children;
+            let x = tiles[a];
+            let y = tiles[b];
+
+            let tempImage = x.style.backgroundImage;
+            let tempPosition = x.style.backgroundPosition;
+
+            let xItemNumber = getItemNumber(x)
+            let yItemNumber = getItemNumber(y)
+
+            x.style.backgroundImage = y.style.backgroundImage;
+            x.style.backgroundPosition = y.style.backgroundPosition;
+            x.classList.remove("item-number-" + xItemNumber)
+            x.classList.add("item-number-" + yItemNumber)
+
+            y.style.backgroundImage = tempImage;
+            y.style.backgroundPosition = tempPosition;
+            y.classList.remove("item-number-" + yItemNumber)
+            y.classList.add("item-number-" + xItemNumber)
+
+            if (x.classList.contains("empty-item")) {
+                x.classList.remove("empty-item")
+                y.style.backgroundImage = null;
+                y.classList.add("empty-item")
+            }
+            else if (y.classList.contains("empty-item")) {
+                y.classList.remove("empty-item")
+                x.style.backgroundImage = null;
+                x.classList.add("empty-item")
+            }
+
+        }
+
+        function suffer() {
+            // var sufferArr = [...Array(gameSize * gameSize).keys()]
+
+            // for (let i = sufferArr.length - 1; i > 0; i--) {
+            //     const j = Math.floor(Math.random() * (i + 1));
+            //     [sufferArr[i], sufferArr[j]] = [sufferArr[j], sufferArr[i]];
+            // }
+
+            // for (let i = 0; i < gameSize * gameSize; i++) {
+            //     swapItem(i, sufferArr[i])
+            // }
+            let lastItem = gameSize * gameSize - 1;
+            let emptyItemIndex = lastItem;
+            let paths = [1, -1, gameSize, -gameSize]
+
+            for (let i = 0; i < 400; i++) {
+                let rand = Math.floor(Math.random() * 4);
+                let clickedIndex = emptyItemIndex + paths[rand]
+
+                if (clickedIndex >= 0 && clickedIndex <= lastItem) {
+                    if (isValidMove(clickedIndex, emptyItemIndex)) {
+                        swapItem(clickedIndex, emptyItemIndex);
+                        emptyItemIndex = clickedIndex;
+                    }
+                }
+            }
+        }
+
+        function handleImage(e) {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var img = new Image();
+            var puzzle = document.getElementById('puzzle');
+            var puzzleWidth = parseInt(window.getComputedStyle(puzzle).getPropertyValue('width'));
+            var puzzleHeight = parseInt(window.getComputedStyle(puzzle).getPropertyValue('height'));
+
+            img.onload = function () {
+                var width, height;
+                if (img.width > img.height) {
+                    width = puzzleWidth;
+                    height = puzzleWidth * (img.height / img.width);
+                } else {
+                    height = puzzleHeight;
+                    width = puzzleHeight * (img.width / img.height);
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                ctx.drawImage(img, 0, 0, width, height);
+                var tileSize = width / gameSize;
+
+                var count = 0;
+
+                for (var y = 0; y < gameSize; y++) {
+                    for (var x = 0; x < gameSize; x++) {
+                        var puzzleItem = document.createElement('div');
+                        puzzleItem.className = 'puzzle-item';
+
+                        if ((y * gameSize + x) !== gameSize * gameSize - 1) {
+                            puzzleItem.style.backgroundImage = 'url(' + canvas.toDataURL() + ')';
+                        } else {
+                            puzzleItem.style.backgroundImage = null;
+                            puzzleItem.classList.add("empty-item");
+                        }
+                        puzzleItem.classList.add("item-number-" + count);
+                        puzzleItem.style.backgroundSize = width + 'px ' + height + 'px';
+                        puzzleItem.style.backgroundPosition = (-x * tileSize) + 'px ' + (-y * tileSize) + 'px';
+                        puzzleItem.style.width = tileSize + 'px';
+                        puzzleItem.style.height = tileSize + 'px';
+                        puzzleItem.setAttribute('onclick', 'moveTile(' + (y * gameSize + x) + ')');
+                        puzzle.appendChild(puzzleItem);
+                        count++;
+                    }
+                }
+
+                suffer();
+            }
+            img.src = URL.createObjectURL(e.target.files[0]);
+        }
+
+        function winCheck(tiles) {
+            for (let i = 0; i < tiles.length; i++) {
+                let current = parseInt(getItemNumber(tiles[i]))
+                if (current !== i) {
+                    return;
+                }
+            }
+            alert("--WIN!--")
+        }
+
+        function moveTile(index) {
+            let tiles = document.getElementById('puzzle').children;
+            let emptyTile = null;
+            let emptyIndex = -1;
+
+            for (let i = 0; i < tiles.length; i++) {
+                if (tiles[i].classList.contains("empty-item")) {
+                    emptyTile = tiles[i];
+                    emptyIndex = i;
+                    break;
+                }
+            }
+
+            let clickedTile = tiles[index];
+            let clickedIndex = index;
+
+            if (isValidMove(clickedIndex, emptyIndex)) {
+                swapItem(emptyIndex, clickedIndex)
+            }
+
+            winCheck(tiles)
+        }
+
+        function isValidMove(clickedIndex, emptyIndex) {
+            var ci = Math.floor(clickedIndex / gameSize);
+            var cj = clickedIndex % gameSize;
+
+            var ei = Math.floor(emptyIndex / gameSize);
+            var ej = emptyIndex % gameSize;
+
+            return ci === ei + 1 && cj === ej
+                || ci === ei - 1 && cj === ej
+                || ci === ei && cj === ej + 1
+                || ci === ei && cj === ej - 1
+        }
+
+    </script>
+
+</body>
+
+</html>
