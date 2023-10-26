@@ -63,13 +63,13 @@
     </div>
 
     <script>
-        var gameSize = null;
+        let gameSize = null;
 
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
 
         function showGame() {
-            var game = document.getElementById("game");
-            var menu = document.getElementById("menu");
+            let game = document.getElementById("game");
+            let menu = document.getElementById("menu");
             game.style.display = "block";
             menu.style.display = "none";
             gameSize = parseInt(document.getElementById("size").value);
@@ -124,43 +124,46 @@
         }
 
         function suffer() {
-            // var sufferArr = [...Array(gameSize * gameSize).keys()]
-
-            // for (let i = sufferArr.length - 1; i > 0; i--) {
-            //     const j = Math.floor(Math.random() * (i + 1));
-            //     [sufferArr[i], sufferArr[j]] = [sufferArr[j], sufferArr[i]];
-            // }
-
-            // for (let i = 0; i < gameSize * gameSize; i++) {
-            //     swapItem(i, sufferArr[i])
-            // }
+            let sufferArr = [...Array(gameSize * gameSize).keys()]
             let lastItem = gameSize * gameSize - 1;
             let emptyItemIndex = lastItem;
             let paths = [1, -1, gameSize, -gameSize]
 
-            for (let i = 0; i < 400; i++) {
-                let rand = Math.floor(Math.random() * 4);
-                let clickedIndex = emptyItemIndex + paths[rand]
+            console.log(sufferArr)
 
-                if (clickedIndex >= 0 && clickedIndex <= lastItem) {
-                    if (isValidMove(clickedIndex, emptyItemIndex)) {
-                        swapItem(clickedIndex, emptyItemIndex);
-                        emptyItemIndex = clickedIndex;
+        
+            for (let count = 0; count < 10000; count++) {
+
+                let rand = Math.floor(Math.random() * 4);
+                let i = emptyItemIndex + paths[rand]
+
+                if (i >= 0 && i <= lastItem) {
+                    if (isValidMove(i, emptyItemIndex)) {
+                        
+                        let temp = sufferArr[i];
+                        sufferArr[i] = sufferArr[emptyItemIndex];
+                        sufferArr[emptyItemIndex] = temp;
+                        
+                        emptyItemIndex = i;
                     }
                 }
+            }
+
+            for (let i = 0; i < sufferArr.length; i++) {
+                swapItem(i, sufferArr[i])
             }
         }
 
         function handleImage(e) {
-            var canvas = document.createElement('canvas');
-            var ctx = canvas.getContext('2d');
-            var img = new Image();
-            var puzzle = document.getElementById('puzzle');
-            var puzzleWidth = parseInt(window.getComputedStyle(puzzle).getPropertyValue('width'));
-            var puzzleHeight = parseInt(window.getComputedStyle(puzzle).getPropertyValue('height'));
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            let img = new Image();
+            let puzzle = document.getElementById('puzzle');
+            let puzzleWidth = parseInt(window.getComputedStyle(puzzle).getPropertyValue('width'));
+            let puzzleHeight = parseInt(window.getComputedStyle(puzzle).getPropertyValue('height'));
 
             img.onload = function () {
-                var width, height;
+                let width, height;
                 if (img.width > img.height) {
                     width = puzzleWidth;
                     height = puzzleWidth * (img.height / img.width);
@@ -172,13 +175,13 @@
                 canvas.width = width;
                 canvas.height = height;
                 ctx.drawImage(img, 0, 0, width, height);
-                var tileSize = width / gameSize;
+                let tileSize = width / gameSize;
 
-                var count = 0;
+                let count = 0;
 
-                for (var y = 0; y < gameSize; y++) {
-                    for (var x = 0; x < gameSize; x++) {
-                        var puzzleItem = document.createElement('div');
+                for (let y = 0; y < gameSize; y++) {
+                    for (let x = 0; x < gameSize; x++) {
+                        let puzzleItem = document.createElement('div');
                         puzzleItem.className = 'puzzle-item';
 
                         if ((y * gameSize + x) !== gameSize * gameSize - 1) {
@@ -237,11 +240,11 @@
         }
 
         function isValidMove(clickedIndex, emptyIndex) {
-            var ci = Math.floor(clickedIndex / gameSize);
-            var cj = clickedIndex % gameSize;
+            let ci = Math.floor(clickedIndex / gameSize);
+            let cj = clickedIndex % gameSize;
 
-            var ei = Math.floor(emptyIndex / gameSize);
-            var ej = emptyIndex % gameSize;
+            let ei = Math.floor(emptyIndex / gameSize);
+            let ej = emptyIndex % gameSize;
 
             return ci === ei + 1 && cj === ej
                 || ci === ei - 1 && cj === ej
