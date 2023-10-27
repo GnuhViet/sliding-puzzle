@@ -152,6 +152,39 @@
             }
         }
 
+        function countInversions(puzzle) {
+            let emptyTile = puzzle.length - 1;
+            let numberOfInversion = 0;
+            for (let i = 0; i < puzzle.length; i++) {
+                if (puzzle[i] === emptyTile)
+                    continue;
+
+                for (let j = i+1; j < puzzle.length; j++) {
+                    if ((puzzle[j] < puzzle[i]) && (puzzle[j] !== emptyTile)) {
+                        numberOfInversion++;
+                    }
+                }
+            }
+            return numberOfInversion;
+        }
+
+        function getRowNumberFromBelow(emptyIndex) {
+            let row = Math.floor(emptyIndex / gameSize) + 1;
+            return gameSize - row;
+        }
+
+        function isSolvable(numberOfInversion, emptyIndex) {
+            if (gameSize % 2 !== 0)
+                return numberOfInversion % 2 == 0;
+            
+            let rowNumber = getRowNumberFromBelow(emptyIndex)
+
+            if (rowNumber % 2 !== 0)
+                return numberOfInversion % 2 === 0;
+            else
+                return numberOfInversion % 2 !== 0;
+        }
+
         function suffer() {
             let sufferArr = [...Array(gameSize * gameSize).keys()]
             let lastItem = gameSize * gameSize - 1;
@@ -177,6 +210,8 @@
                     }
                 }
             }
+
+            console.log(countInversions(sufferArr));
 
             console.log(sufferArr)
 
