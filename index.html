@@ -11,6 +11,14 @@
             height: 300px;
         }
 
+        .origin {
+            display: grid;
+            /* grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px); */
+            width: 300px;
+            height: 300px;
+        }
+
         .puzzle-item {
             width: 100px;
             height: 100px;
@@ -45,12 +53,17 @@
             padding: 20px;
             border: 1px solid #ddd;
         }
+
+        .game-container {
+            display: flex;
+            justify-content: space-evenly;
+        }
     </style>
 </head>
 
 <body>
 
-    <div id="menu">
+    <div id="menu" >
         <button class="button" onclick="showGame()">Play</button>
         <button class="button">Button 2</button>
         <button class="button">Button 3</button>
@@ -59,7 +72,10 @@
 
     <div id="game">
         <input type="file" id="imageLoader" name="imageLoader" />
-        <div class="puzzle" id="puzzle"></div>
+        <div class="game-container">
+            <div class="puzzle" id="puzzle"></div>
+            <div class="puzzle" id="origin"></div>
+        </div>
     </div>
 
     <script>
@@ -74,9 +90,13 @@
             menu.style.display = "none";
             gameSize = parseInt(document.getElementById("size").value);
 
-            const puzzle = document.querySelector('.puzzle');
+            const puzzle = document.querySelector('#puzzle');
+            const origin = document.querySelector('#origin');
             puzzle.style.gridTemplateColumns = `repeat(${gameSize}, ${300 / gameSize}px)`;
             puzzle.style.gridTemplateRows = `repeat(${gameSize}, ${300 / gameSize}px)`;
+
+            origin.style.gridTemplateColumns = `repeat(${gameSize}, ${300 / gameSize}px)`;
+            origin.style.gridTemplateRows = `repeat(${gameSize}, ${300 / gameSize}px)`;
         }
 
         function getItemNumber(x) {
@@ -89,11 +109,7 @@
             return res
         }
 
-        function swapItem(a, b) {
-            let tiles = document.getElementById('puzzle').children;
-            let x = tiles[a];
-            let y = tiles[b];
-
+        function swapItem(x, y) {
             let tempImage = x.style.backgroundImage;
             let tempPosition = x.style.backgroundPosition;
 
@@ -120,7 +136,20 @@
                 x.style.backgroundImage = null;
                 x.classList.add("empty-item")
             }
+        }
 
+        function copyItem(x, y) {
+            let xItemNumber = getItemNumber(x)
+            let yItemNumber = getItemNumber(y)
+            y.style.backgroundImage = x.style.backgroundImage; 
+            y.style.backgroundPosition = x.style.backgroundPosition;
+            y.classList.remove("item-number-" + yItemNumber)
+            y.classList.add("item-number-" + xItemNumber)
+
+            if(x.classList.contains("empty-item")) {
+                y.style.backgroundImage = null;
+                y.classList.add("empty-item")
+            }
         }
 
         function suffer() {
@@ -129,9 +158,9 @@
             let emptyItemIndex = lastItem;
             let paths = [1, -1, gameSize, -gameSize]
 
+
             console.log(sufferArr)
 
-        
             for (let count = 0; count < 10000; count++) {
 
                 let rand = Math.floor(Math.random() * 4);
@@ -149,8 +178,13 @@
                 }
             }
 
+            console.log(sufferArr)
+
+            let originTiles = document.getElementById('origin').children;
+            let tiles = document.getElementById('puzzle').children;
+            
             for (let i = 0; i < sufferArr.length; i++) {
-                swapItem(i, sufferArr[i])
+                copyItem(originTiles[sufferArr[i]], tiles[i]);
             }
         }
 
@@ -159,6 +193,7 @@
             let ctx = canvas.getContext('2d');
             let img = new Image();
             let puzzle = document.getElementById('puzzle');
+            let origin = document.getElementById('origin');
             let puzzleWidth = parseInt(window.getComputedStyle(puzzle).getPropertyValue('width'));
             let puzzleHeight = parseInt(window.getComputedStyle(puzzle).getPropertyValue('height'));
 
@@ -197,6 +232,7 @@
                         puzzleItem.style.height = tileSize + 'px';
                         puzzleItem.setAttribute('onclick', 'moveTile(' + (y * gameSize + x) + ')');
                         puzzle.appendChild(puzzleItem);
+                        origin.appendChild(puzzleItem.cloneNode(true))
                         count++;
                     }
                 }
@@ -233,7 +269,8 @@
             let clickedIndex = index;
 
             if (isValidMove(clickedIndex, emptyIndex)) {
-                swapItem(emptyIndex, clickedIndex)
+                let tiles = document.getElementById('puzzle').children;
+                swapItem(tiles[emptyIndex], tiles[clickedIndex]);
             }
 
             winCheck(tiles)
