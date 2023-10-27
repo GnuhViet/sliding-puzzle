@@ -5,23 +5,19 @@
     <style>
         .puzzle {
             display: grid;
-            /* grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px); */
-            width: 300px;
-            height: 300px;
+            width: 600px;
+            height: 600px;
         }
 
         .origin {
             display: grid;
-            /* grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px); */
-            width: 300px;
-            height: 300px;
+            width: 600px;
+            height: 600px;
         }
 
         .puzzle-item {
-            width: 100px;
-            height: 100px;
+            width: 200px;
+            height: 200px;
             border: 1px solid black;
             box-sizing: border-box;
             display: flex;
@@ -84,19 +80,21 @@
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
 
         function showGame() {
-            let game = document.getElementById("game");
-            let menu = document.getElementById("menu");
+            gameSize = parseInt(document.getElementById("size").value);
+            
+            const game = document.getElementById("game");
+            const menu = document.getElementById("menu");
             game.style.display = "block";
             menu.style.display = "none";
-            gameSize = parseInt(document.getElementById("size").value);
 
             const puzzle = document.querySelector('#puzzle');
             const origin = document.querySelector('#origin');
-            puzzle.style.gridTemplateColumns = `repeat(${gameSize}, ${300 / gameSize}px)`;
-            puzzle.style.gridTemplateRows = `repeat(${gameSize}, ${300 / gameSize}px)`;
+            const width = puzzle.offsetWidth;
 
-            origin.style.gridTemplateColumns = `repeat(${gameSize}, ${300 / gameSize}px)`;
-            origin.style.gridTemplateRows = `repeat(${gameSize}, ${300 / gameSize}px)`;
+            puzzle.style.gridTemplateColumns = `repeat(${gameSize}, ${width / gameSize}px)`;
+            puzzle.style.gridTemplateRows = `repeat(${gameSize}, ${width / gameSize}px)`;
+            origin.style.gridTemplateColumns = `repeat(${gameSize}, ${width / gameSize}px)`;
+            origin.style.gridTemplateRows = `repeat(${gameSize}, ${width / gameSize}px)`;
         }
 
         function getItemNumber(x) {
@@ -296,7 +294,10 @@
                         puzzleItem.style.height = tileSize + 'px';
                         puzzleItem.setAttribute('onclick', 'moveTile(' + (y * gameSize + x) + ')');
                         puzzle.appendChild(puzzleItem);
-                        origin.appendChild(puzzleItem.cloneNode(true))
+
+                        let clone = puzzleItem.cloneNode(true);
+                        clone.removeAttribute("onclick");
+                        origin.appendChild(clone);
                         count++;
                     }
                 }
