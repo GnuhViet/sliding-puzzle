@@ -173,7 +173,26 @@
             return gameSize - row;
         }
 
-        function isSolvable(numberOfInversion, emptyIndex) {
+        function getEmptyIndex(puzzle) {
+            let emptyIndex = null;
+            for (let i = 0; i < puzzle.length; i++) {
+                if (puzzle[i] == puzzle.length - 1) {
+                    emptyIndex = i;
+                    break;
+                }
+            }
+            return emptyIndex;
+        }
+
+        function isSolvable(puzzle) {
+            let numberOfInversion = countInversions(puzzle);
+            let emptyIndex = getEmptyIndex(puzzle);
+            
+            console.log("puzzle: " + puzzle);
+            console.log("number of inversion: " + numberOfInversion);
+            console.log("empty index: " + emptyIndex);
+            
+
             if (gameSize % 2 !== 0)
                 return numberOfInversion % 2 == 0;
             
@@ -188,32 +207,42 @@
         function suffer() {
             let sufferArr = [...Array(gameSize * gameSize).keys()]
             let lastItem = gameSize * gameSize - 1;
-            let emptyItemIndex = lastItem;
-            let paths = [1, -1, gameSize, -gameSize]
-
-
-            console.log(sufferArr)
-
-            for (let count = 0; count < 10000; count++) {
-
-                let rand = Math.floor(Math.random() * 4);
-                let i = emptyItemIndex + paths[rand]
-
-                if (i >= 0 && i <= lastItem) {
-                    if (isValidMove(i, emptyItemIndex)) {
-                        
-                        let temp = sufferArr[i];
-                        sufferArr[i] = sufferArr[emptyItemIndex];
-                        sufferArr[emptyItemIndex] = temp;
-                        
-                        emptyItemIndex = i;
-                    }
-                }
+            
+            for (let i = sufferArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [sufferArr[i], sufferArr[j]] = [sufferArr[j], sufferArr[i]];
             }
 
-            console.log(countInversions(sufferArr));
+            while(!isSolvable(sufferArr)) {
+                console.log("unsolvable!!"); 
+                if (sufferArr[0] !== lastItem && sufferArr[1] !== lastItem) {
+                    [sufferArr[0], sufferArr[1]] = [sufferArr[1], sufferArr[0]];
+                }
+                else {
+                    n = sufferArr.length - 1;
+                    m = sufferArr.length - 2;
+                    [sufferArr[n], sufferArr[m]] = [sufferArr[m], sufferArr[n]];
+                }
+            }
+            console.log("solvable!!");           
 
-            console.log(sufferArr)
+
+            // for (let count = 0; count < 10000; count++) {
+
+            //     let rand = Math.floor(Math.random() * 4);
+            //     let i = emptyItemIndex + paths[rand]
+
+            //     if (i >= 0 && i <= lastItem) {
+            //         if (isValidMove(i, emptyItemIndex)) {
+                        
+            //             let temp = sufferArr[i];
+            //             sufferArr[i] = sufferArr[emptyItemIndex];
+            //             sufferArr[emptyItemIndex] = temp;
+                        
+            //             emptyItemIndex = i;
+            //         }
+            //     }
+            // }
 
             let originTiles = document.getElementById('origin').children;
             let tiles = document.getElementById('puzzle').children;
