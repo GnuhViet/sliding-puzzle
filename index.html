@@ -20,7 +20,7 @@
 
     <nav class="navbar">
         <div class="navbar-content">
-            <div class="logo navbar-left glowing-txt">
+            <div class="logo navbar-left shadow glowing-txt">
                 Sliding Puzzle 
             </div>
             <div class="navbar-right">
@@ -55,7 +55,6 @@
                 <span></span>
                 <span></span>
             </div>
-        
         </div>
         <div class="menu-button sizing">
         <span class="glowing-txt"> Pu<span class='faulty-letter'>zz</span>le siz<span class='faulty-letter'>e</span></span>
@@ -67,10 +66,34 @@
     <div id="game">
         <div class="file">
             <label for="file">
-                <ion-icon name="cloud-upload-outline"></ion-icon>
             <input id="imageLoader" type="file" name="imageLoader" onchange="handleImage(event)"></label>
         </div>
+
+        <div class="playfield">
         <div class="puzzle" id="puzzle"></div>
+        <div id="sidemenu">
+            <div class="menu-item">
+                <span class="menu-label">- Time -</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-label count" id="timeCount">00:00</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-label">- Move -</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-label count" id="moveCount">0</span>
+            </div>
+            <div class="menu-item">
+                <span class="city-night">AImode</span>
+                <!--<span class="">Easy</span>-->
+            </div>
+            <div class="menu-item">
+                <button class="" id="undoButton">Undo</button>
+                <button class="" id="returnButton">Go to Home</i></button>
+            </div>
+        </div>
+        </div>
     </div>
 
 

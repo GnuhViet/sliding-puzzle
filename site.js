@@ -13,12 +13,12 @@ function toggleSound() {
   if (audio.paused) {
     audio.play();
     soundIcon.classList.remove("muted");
-    soundIconIcon.classList.remove("fa-volume-off");
+    soundIconIcon.classList.remove("fa-volume-xmark");
     soundIconIcon.classList.add("fa-volume-up");
   } else {
     audio.pause();
     soundIcon.classList.add("muted");
     soundIconIcon.classList.remove("fa-volume-up");
-    soundIconIcon.classList.add("fa-volume-off");
+    soundIconIcon.classList.add("fa-volume-xmark");
   }
 }
