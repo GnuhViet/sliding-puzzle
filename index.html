@@ -14,10 +14,62 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
 <head>
+    <style>
+        .puzzle {
+            display: grid;
+            width: 600px;
+            height: 600px;
+        }
+
+        .origin {
+            display: grid;
+            width: 600px;
+            height: 600px;
+        }
+
+        .puzzle-item {
+            width: 200px;
+            height: 200px;
+            border: 1px solid black;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #game {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .game-container {
+            display: flex;
+            justify-content: space-evenly;
+        }
+    </style>
 </head>
 
 <body>
-
     <nav class="navbar">
         <div class="navbar-content">
             <div class="logo navbar-left shadow glowing-txt">
@@ -63,6 +115,7 @@
         </div>
     </div>
     
+  
     <div id="game">
         <div class="file">
             <label for="file">
@@ -96,36 +149,27 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <script>
         let gameSize = null;
 
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
 
         function showGame() {
-            let game = document.getElementById("game");
-            let menu = document.getElementById("menu");
+            gameSize = parseInt(document.getElementById("size").value);
+            
+            const game = document.getElementById("game");
+            const menu = document.getElementById("menu");
             game.style.display = "block";
             menu.style.display = "none";
-            gameSize = parseInt(document.getElementById("size").value);
 
-            const puzzle = document.querySelector('.puzzle');
-            puzzle.style.gridTemplateColumns = `repeat(${gameSize}, ${300 / gameSize}px)`;
-            puzzle.style.gridTemplateRows = `repeat(${gameSize}, ${300 / gameSize}px)`;
+            const puzzle = document.querySelector('#puzzle');
+            const origin = document.querySelector('#origin');
+            const width = puzzle.offsetWidth;
+
+            puzzle.style.gridTemplateColumns = `repeat(${gameSize}, ${width / gameSize}px)`;
+            puzzle.style.gridTemplateRows = `repeat(${gameSize}, ${width / gameSize}px)`;
+            origin.style.gridTemplateColumns = `repeat(${gameSize}, ${width / gameSize}px)`;
+            origin.style.gridTemplateRows = `repeat(${gameSize}, ${width / gameSize}px)`;
         }
 
         function getItemNumber(x) {
@@ -138,11 +182,7 @@
             return res
         }
 
-        function swapItem(a, b) {
-            let tiles = document.getElementById('puzzle').children;
-            let x = tiles[a];
-            let y = tiles[b];
-
+        function swapItem(x, y) {
             let tempImage = x.style.backgroundImage;
             let tempPosition = x.style.backgroundPosition;
 
@@ -169,37 +209,119 @@
                 x.style.backgroundImage = null;
                 x.classList.add("empty-item")
             }
+        }
 
+        function copyItem(x, y) {
+            let xItemNumber = getItemNumber(x)
+            let yItemNumber = getItemNumber(y)
+            y.style.backgroundImage = x.style.backgroundImage; 
+            y.style.backgroundPosition = x.style.backgroundPosition;
+            y.classList.remove("item-number-" + yItemNumber)
+            y.classList.add("item-number-" + xItemNumber)
+
+            if(x.classList.contains("empty-item")) {
+                y.style.backgroundImage = null;
+                y.classList.add("empty-item")
+            }
+        }
+
+        function countInversions(puzzle) {
+            let emptyTile = puzzle.length - 1;
+            let numberOfInversion = 0;
+            for (let i = 0; i < puzzle.length; i++) {
+                if (puzzle[i] === emptyTile)
+                    continue;
+
+                for (let j = i+1; j < puzzle.length; j++) {
+                    if ((puzzle[j] < puzzle[i]) && (puzzle[j] !== emptyTile)) {
+                        numberOfInversion++;
+                    }
+                }
+            }
+            return numberOfInversion;
+        }
+
+        function getRowNumberFromBelow(emptyIndex) {
+            let row = Math.floor(emptyIndex / gameSize) + 1;
+            return gameSize - row;
+        }
+
+        function getEmptyIndex(puzzle) {
+            let emptyIndex = null;
+            for (let i = 0; i < puzzle.length; i++) {
+                if (puzzle[i] == puzzle.length - 1) {
+                    emptyIndex = i;
+                    break;
+                }
+            }
+            return emptyIndex;
+        }
+
+        function isSolvable(puzzle) {
+            let numberOfInversion = countInversions(puzzle);
+            let emptyIndex = getEmptyIndex(puzzle);
+            
+            console.log("puzzle: " + puzzle);
+            console.log("number of inversion: " + numberOfInversion);
+            console.log("empty index: " + emptyIndex);
+            
+
+            if (gameSize % 2 !== 0)
+                return numberOfInversion % 2 == 0;
+            
+            let rowNumber = getRowNumberFromBelow(emptyIndex)
+
+            if (rowNumber % 2 !== 0)
+                return numberOfInversion % 2 === 0;
+            else
+                return numberOfInversion % 2 !== 0;
         }
 
         function suffer() {
             let sufferArr = [...Array(gameSize * gameSize).keys()]
             let lastItem = gameSize * gameSize - 1;
-            let emptyItemIndex = lastItem;
-            let paths = [1, -1, gameSize, -gameSize]
-
-            console.log(sufferArr)
-
-        
-            for (let count = 0; count < 10000; count++) {
-
-                let rand = Math.floor(Math.random() * 4);
-                let i = emptyItemIndex + paths[rand]
-
-                if (i >= 0 && i <= lastItem) {
-                    if (isValidMove(i, emptyItemIndex)) {
-                        
-                        let temp = sufferArr[i];
-                        sufferArr[i] = sufferArr[emptyItemIndex];
-                        sufferArr[emptyItemIndex] = temp;
-                        
-                        emptyItemIndex = i;
-                    }
-                }
+            
+            for (let i = sufferArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [sufferArr[i], sufferArr[j]] = [sufferArr[j], sufferArr[i]];
             }
 
+            while(!isSolvable(sufferArr)) {
+                console.log("unsolvable!!"); 
+                if (sufferArr[0] !== lastItem && sufferArr[1] !== lastItem) {
+                    [sufferArr[0], sufferArr[1]] = [sufferArr[1], sufferArr[0]];
+                }
+                else {
+                    n = sufferArr.length - 1;
+                    m = sufferArr.length - 2;
+                    [sufferArr[n], sufferArr[m]] = [sufferArr[m], sufferArr[n]];
+                }
+            }
+            console.log("solvable!!");           
+
+
+            // for (let count = 0; count < 10000; count++) {
+
+            //     let rand = Math.floor(Math.random() * 4);
+            //     let i = emptyItemIndex + paths[rand]
+
+            //     if (i >= 0 && i <= lastItem) {
+            //         if (isValidMove(i, emptyItemIndex)) {
+                        
+            //             let temp = sufferArr[i];
+            //             sufferArr[i] = sufferArr[emptyItemIndex];
+            //             sufferArr[emptyItemIndex] = temp;
+                        
+            //             emptyItemIndex = i;
+            //         }
+            //     }
+            // }
+
+            let originTiles = document.getElementById('origin').children;
+            let tiles = document.getElementById('puzzle').children;
+            
             for (let i = 0; i < sufferArr.length; i++) {
-                swapItem(i, sufferArr[i])
+                copyItem(originTiles[sufferArr[i]], tiles[i]);
             }
         }
 
@@ -208,6 +330,7 @@
             let ctx = canvas.getContext('2d');
             let img = new Image();
             let puzzle = document.getElementById('puzzle');
+            let origin = document.getElementById('origin');
             let puzzleWidth = parseInt(window.getComputedStyle(puzzle).getPropertyValue('width'));
             let puzzleHeight = parseInt(window.getComputedStyle(puzzle).getPropertyValue('height'));
 
@@ -246,6 +369,10 @@
                         puzzleItem.style.height = tileSize + 'px';
                         puzzleItem.setAttribute('onclick', 'moveTile(' + (y * gameSize + x) + ')');
                         puzzle.appendChild(puzzleItem);
+
+                        let clone = puzzleItem.cloneNode(true);
+                        clone.removeAttribute("onclick");
+                        origin.appendChild(clone);
                         count++;
                     }
                 }
@@ -282,7 +409,8 @@
             let clickedIndex = index;
 
             if (isValidMove(clickedIndex, emptyIndex)) {
-                swapItem(emptyIndex, clickedIndex)
+                let tiles = document.getElementById('puzzle').children;
+                swapItem(tiles[emptyIndex], tiles[clickedIndex]);
             }
 
             winCheck(tiles)
