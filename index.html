@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html>
-
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
 <head>
     <style>
         .puzzle {
@@ -58,19 +70,82 @@
 </head>
 
 <body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo navbar-left shadow glowing-txt">
+                Sliding Puzzle 
+            </div>
+            <div class="navbar-right">
+                <i class="fas fa-question-circle glowing-txt"></i>
+                <div id="soundIcon" onclick="toggleSound()">
+                    <i id="soundIconIcon" class="fas fa-volume-up glowing-txt"></i>
+                  </div>
+                <audio id="myAudio" src="sound-file.mp3"></audio>
+            </div>
+        </div>
+        
+    </nav>
 
-    <div id="menu" >
-        <button class="button" onclick="showGame()">Play</button>
-        <button class="button">Button 2</button>
-        <button class="button">Button 3</button>
-        <input type="text" id="size" value="3" min="3">
+    
+    <div class="container" id="menu">
+        <button class="menu-button glowing-btn shadow" onclick="showGame()"><span class='glowing-txt'>PLAY</span></button>
+        <div class="menu-button slanted">
+            <button class="glowing-btn"><span class='glowing-txt'>AI Mode</span></button>
+            <button class="not-choose-this"><span class='zen-text'>Zen</span></button>
+          </div>
+        <div class="menu-button button-container">
+            <div class="arrow-left">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <button class="level-button active glowing-btn" onclick="setActiveButton(0)"><span class='glowing-txt'>Easy</span></button>
+            <button class="level-button glowing-btn" onclick="setActiveButton(1)"><span class='glowing-txt'>Medium</span></button>
+            <button class="level-button glowing-btn" onclick="setActiveButton(2)"><span class='glowing-txt'>Hard</span></button>
+            <div class="arrow-right">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="menu-button sizing">
+        <span class="glowing-txt"> Pu<span class='faulty-letter'>zz</span>le siz<span class='faulty-letter'>e</span></span>
+        <input class="glowing-btn not-hover glowing-txt" type="number" id="size" value="3" min="3">
+        
+        </div>
     </div>
-
+    
+  
     <div id="game">
-        <input type="file" id="imageLoader" name="imageLoader" />
-        <div class="game-container">
-            <div class="puzzle" id="puzzle"></div>
-            <div class="puzzle" id="origin"></div>
+        <div class="file">
+            <label for="file">
+            <input id="imageLoader" type="file" name="imageLoader" onchange="handleImage(event)"></label>
+        </div>
+
+        <div class="playfield">
+        <div class="puzzle" id="puzzle"></div>
+        <div id="sidemenu">
+            <div class="menu-item">
+                <span class="menu-label">- Time -</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-label count" id="timeCount">00:00</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-label">- Move -</span>
+            </div>
+            <div class="menu-item">
+                <span class="menu-label count" id="moveCount">0</span>
+            </div>
+            <div class="menu-item">
+                <span class="city-night">AImode</span>
+                <!--<span class="">Easy</span>-->
+            </div>
+            <div class="menu-item">
+                <button class="" id="undoButton">Undo</button>
+                <button class="" id="returnButton">Go to Home</i></button>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -357,5 +432,9 @@
     </script>
 
 </body>
-
+<script src="/site.js" asp-append-version="true"></script>
+<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </html>
