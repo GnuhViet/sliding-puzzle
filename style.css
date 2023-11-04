@@ -1,6 +1,6 @@
 :root {
     --base: #0f1923;
-    --glow-color: hsl(186 100% 69%);
+    --glow-color: hsl(186, 100%, 69%);
     --pink: #9d0938;
   }
   @font-face {
@@ -8,6 +8,7 @@
     src: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/707108/neon.ttf);
   }
   @import url("https://fonts.googleapis.com/css?family=Raleway");
+  @import url('https://fonts.googleapis.com/css2?family=WindSong&display=swap');
 
 html {
     position: relative;
@@ -52,8 +53,11 @@ html {
 .logo {
   font-family: neon, sans-serif;
   user-select: none;
-  font-size: 3.5rem;
+  font-size: 7rem;
   color: var(--glow-color);
+  line-height: 90%;
+  margin-bottom: 0.8em;
+  margin-right: 0 !important;
   }
 
 body::before {
@@ -76,7 +80,6 @@ body::before {
       justify-content: center;
       align-items: center;
       flex-direction: column;
-      margin-top: 200px;
   }
   
   /*Menu*/
@@ -124,7 +127,7 @@ body::before {
       0px 0px 0.5em 0px var(--glow-color);
     box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
       0px 0px 0.5em 0px var(--glow-color);
-    animation: border-flicker 2s linear infinite;
+    animation: border-flicker 5s linear infinite;
   }
 
   .not-choose-this {
@@ -141,7 +144,7 @@ body::before {
     font-size: 2em;
     font-weight: 900;
     letter-spacing: 1em;
-    animation: border-flicker 2s linear infinite;
+    animation: border-flicker 15s linear infinite;
   }
   
   .glowing-txt {
@@ -152,12 +155,21 @@ body::before {
      -moz-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
       0 0 0.45em var(--glow-color);
     text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em var(--glow-color);
-    animation: text-flicker 3s linear infinite;
+    animation: text-flicker 15s linear infinite;
+  }
+
+  .pink{
+    color:#E91E63;
+    -webkit-text-shadow: 0 0 0.125em hsla(0, 45%, 26%, 0.3),
+      0 0 0.45em var(--glow-color);
+     -moz-text-shadow: 0 0 0.125em hsla(0, 65%, 32%, 0.3),
+      0 0 0.45em var(--glow-color);
+    text-shadow: 0 0 0.125em hsla(0, 69%, 33%, 0.3), 0 0 0.45em var(--pink);
   }
   
   .faulty-letter {
     opacity: 0.5;
-    animation: faulty-flicker 2s linear infinite;
+    animation: faulty-flicker 5s linear infinite;
   }
 
   .shadow:before{
@@ -452,7 +464,7 @@ input[type=number] {
   background: 
     conic-gradient(at calc(100% - 1.3*var(--b)) 0,var(--glow-color) 209deg, #0000 211deg) 
     border-box;
-  clip-path: polygon(-25% -25%, 125% -25%, calc(125% - 1.25*0.6789*2em) 125%, -25% 125%);
+  clip-path: polygon(-25% -25%, 102.745% -25%, 85.3% 125%, -25% 125%);
   box-sizing: border-box;
   transition: flex .4s;
   padding-left: calc(0.3111*2em);
@@ -550,9 +562,7 @@ label[for=file]:active {
     padding: 30px;
     /*border: 1px solid #ddd;*/
 }
-.playfield{
-  display:flex;
-}
+
 #sidemenu {
   flex-direction: column;
   justify-content: center;
@@ -571,17 +581,16 @@ label[for=file]:active {
 }
 
 .menu-label {
-	font-style: italic;
   color: #fff;
 	text-transform: uppercase;
 	-webkit-text-stroke: #fff;
 	-webkit-text-stroke-width: 1px;
 	text-shadow: 2px 2px 10px var(--glow-color);
-	transition: all 0.5s ease-in-out;
+	transition: all 10s ease-in-out;
 	text-align: center;
 	letter-spacing: 0.2em;
   font-size: 1.5em;
-	animation: flicker 0.5s ease-in-out infinite alternate;
+	animation: flicker 10s ease-in-out infinite alternate;
 
 	&:hover {
 		color: #fff;
@@ -640,7 +649,51 @@ label[for=file]:active {
   font-size: 2em !important;
   animation: lights 5s 750ms linear infinite;
   font: 100% / 1.5 Raleway, sans-serif;
-  padding-bottom: 1em;
   letter-spacing: 0.5em;
   line-height: 1.5;
+}
+
+.wind-font{
+  color:#c2144b;
+  font-size: 2em;
+  font-family: 'WindSong', cursive;
+  font-style: bold;
+  transform: scaleX(1.5);
+}
+
+.overlay{
+  position: absolute;
+  z-index:100;
+}
+
+.menu-icon{
+  margin-top: 1em;;
+  font-size: 2em;
+  color: cyan;
+  display: block;
+  justify-items: center;
+  align-items: center;
+  margin-right: 1.75em;
+}
+
+
+#warning-message {
+  position: absolute;
+  top: 200px;
+  font-size: 2em;
+  display: none;
+  background-color: #0f1923;
+  border-radius: 1.5em;
+  color: cyan;
+  margin-right: -1em;
+  padding: 2em;
+  float: right;
+  z-index: 999;
+}
+
+#close-button {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  cursor: pointer;
 }

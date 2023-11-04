@@ -22,3 +22,22 @@ function toggleSound() {
     soundIconIcon.classList.add("fa-volume-xmark");
   }
 }
+
+document.getElementById("homeButton").addEventListener("click", function() {
+  location.reload(); 
+});
+
+document.getElementById('size').addEventListener('change', function() {
+  var sizeInput = this.value;
+  var warningMessage = document.getElementById('warning-message');
+
+  if (sizeInput < 3 || sizeInput > 5) {
+      warningMessage.style.display = 'block';
+  } else {
+      warningMessage.style.display = 'none';
+  }
+});
+
+document.getElementById('close-button').addEventListener('click', function() {
+  document.getElementById('warning-message').style.display = 'none';
+});

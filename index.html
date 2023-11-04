@@ -10,8 +10,7 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=WindSong&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
 <head>
     <style>
@@ -45,21 +44,10 @@
             margin-top: 50px;
         }
 
-        .button {
-            padding: 10px 20px;
-            margin: 0 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
         #game {
             display: none;
             margin-top: 20px;
             padding: 20px;
-            border: 1px solid #ddd;
         }
 
         .game-container {
@@ -72,9 +60,6 @@
 <body>
     <nav class="navbar">
         <div class="navbar-content">
-            <div class="logo navbar-left shadow glowing-txt">
-                Sliding Puzzle 
-            </div>
             <div class="navbar-right">
                 <i class="fas fa-question-circle glowing-txt"></i>
                 <div id="soundIcon" onclick="toggleSound()">
@@ -88,6 +73,15 @@
 
     
     <div class="container" id="menu">
+        <div class="logo shadow ">
+            <div class="shadow glowing-txt">
+                Sliding </br> </div>
+            <div class="pink shadow"> Pu<span class="faulty-letter">zz</span>le </div>
+        </div>
+        <div id="warning-message">
+            Sorry to say that we haven't develope this type of size. Please set it between 3-5.
+            <i id="close-button" class="fas fa-check"></i>
+        </div>
         <button class="menu-button glowing-btn shadow" onclick="showGame()"><span class='glowing-txt'>PLAY</span></button>
         <div class="menu-button slanted">
             <button class="glowing-btn"><span class='glowing-txt'>AI Mode</span></button>
@@ -124,8 +118,7 @@
         <div class="playfield">
             <div class="game-container">
                 <div class="puzzle" id="puzzle"></div>
-                <div class="puzzle" id="origin"></div>
-            </div>
+                
             <div id="sidemenu">
                 <div class="menu-item">
                     <span class="menu-label">- Time -</span>
@@ -141,12 +134,16 @@
                 </div>
                 <div class="menu-item">
                     <span class="city-night">AImode</span>
-                    <!--<span class="">Easy</span>-->
+                    <span class="overlay wind-font">- Easy -</span>
                 </div>
                 <div class="menu-item">
-                    <button class="" id="undoButton">Undo</button>
-                    <button class="" id="returnButton">Go to Home</i></button>
+                    <i class="menu-icon fas fa-exclamation glowing-txt" id="hintButton"  title="Click to have a hint!"></i>
+                    <i class="menu-icon fas fa-bars glowing-txt" id="homeButton"  title="Click to come back home!"></i>
+                    <i class="menu-icon fas fa-rotate-left glowing-txt" id="restartButton" title="Click to restart!"></i>
+                    
                 </div>
+            </div>
+            <div class="puzzle" id="origin"></div>
             </div>
         </div>
     </div>
@@ -439,4 +436,5 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" integrity="sha512-fmdCs/JeC9e7skHwrFfm57ACpQBB2BDLcBpsGApFIdsnvP+QSPYMQJ0v8V0YWtPo3sSpLMp9GB0YF1yy87Z4UTw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </html>
