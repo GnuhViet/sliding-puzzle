@@ -27,6 +27,10 @@ document.getElementById("homeButton").addEventListener("click", function() {
   location.reload(); 
 });
 
+document.getElementById("logo").addEventListener("click", function() {
+  location.reload(); 
+});
+
 document.getElementById('size').addEventListener('change', function() {
   var sizeInput = this.value;
   var warningMessage = document.getElementById('warning-message');
