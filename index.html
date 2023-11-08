@@ -61,11 +61,11 @@
     <nav class="navbar">
         <div class="navbar-content">
             <div class="navbar-right">
-                <i class="fas fa-question-circle glowing-txt"></i>
-                <div id="soundIcon" onclick="toggleSound()">
+                <button><i class="fas fa-question-circle glowing-txt"></i></button>
+                <button><div id="soundIcon" onclick="toggleSound()">
                     <i id="soundIconIcon" class="fas fa-volume-up glowing-txt"></i>
                   </div>
-                <audio id="myAudio" src="sound-file.mp3"></audio>
+                <audio id="myAudio" src="sound-file.mp3" loop></audio></button>
             </div>
         </div>
         
@@ -82,7 +82,7 @@
             Sorry to say that we haven't develope this type of size. Please set it between 3-5.
             <i id="close-button" class="fas fa-check"></i>
         </div>
-        <button class="menu-button glowing-btn shadow" onclick="showGame()"><span class='glowing-txt'>PLAY</span></button>
+        <button class="menu-button glowing-btn shadow" onclick="toggleFileInput()"><span class='glowing-txt'>PLAY</span></button>
         <div class="menu-button slanted">
             <button class="glowing-btn"><span class='glowing-txt'>AI Mode</span></button>
             <button class="not-choose-this"><span class='zen-text'>Zen</span></button>
@@ -108,12 +108,18 @@
         
         </div>
     </div>
-    
-  
+
+    <div id="imageOverlay" class="imageOverlay"></div>
+
+    <div style="display: none;" class="file" id="fileContainer">
+        <label for="file" class="drop-container" id="dropcontainer">
+            <span class="drop-title">Drop files here</span>
+            or
+            <input type="file" id="imageLoader" onchange="hideFileInput()" name="imageLoader" onclick="showGame()"accept="image/*" required>
+          </label>
+    </div>
+
     <div id="game">
-        <div class="file">
-            <label for="file"><input id="imageLoader" type="file" name="imageLoader" ></label>
-        </div>
 
         <div class="playfield">
             <div class="game-container">
@@ -134,16 +140,35 @@
                 </div>
                 <div class="menu-item">
                     <span class="city-night">AImode</span>
-                    <span class="overlay wind-font">- Easy -</span>
+                    <span id="difficultyOverlay" class="overlay wind-font">- Easy -</span>
                 </div>
                 <div class="menu-item">
-                    <i class="menu-icon fas fa-exclamation glowing-txt" id="hintButton"  title="Click to have a hint!"></i>
-                    <i class="menu-icon fas fa-bars glowing-txt" id="homeButton"  title="Click to come back home!"></i>
-                    <i class="menu-icon fas fa-rotate-left glowing-txt" id="restartButton" title="Click to restart!"></i>
-                    
+                    <button id="hintButton"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
+                    <button class="homeButton"><i class="menu-icon fas fa-home glowing-txt"  title="Click to come back home!"></i></button>
+                    <button id="giveupButton"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
                 </div>
             </div>
             <div class="puzzle" id="origin"></div>
+            </div>
+
+            <div id="winNotice">
+                <div class="result">
+                    <h2 class="glowing-txt result-item">Congratulations!</h2>
+                    <p class="result-item">You've won the game!</p>
+                    <p class="result-item">Move left: <span id="moveLeft">0</span></p>
+                    <p class="result-item">Time left: <span id="timeLeft">0 seconds</span></p>
+                    <button class="homeButton"><i class="result-item fas fa-home glowing-txt"></i></button>
+                </div>
+            </div>
+
+            <div id="lostNotice">
+                <div class="result">
+                    <h2 class="glowing-txt result-item">OOPSIE!</h2>
+                    <p class="result-item">You can't even solve this game for kid!</p>
+                    <p class="result-item">Move left: <span id="moveLeft">0</span></p>
+                    <p class="result-item">Time left: <span id="timeLeft">0 seconds</span></p>
+                    <button class="homeButton"><i class="result-item fas fa-home glowing-txt"></i></button>
+                </div>
             </div>
         </div>
     </div>
@@ -152,6 +177,22 @@
         let gameSize = null;
 
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
+        
+        function toggleFileInput() {
+            var fileContainer = document.getElementById('fileContainer');
+            fileContainer.style.display = 'block';
+
+            var imageOverlay = document.getElementById('imageOverlay');
+            imageOverlay.style.display = 'block';
+        }
+
+    function hideFileInput() {
+            var fileContainer = document.getElementById('fileContainer');
+            fileContainer.style.display = 'none';
+
+            var imageOverlay = document.getElementById('imageOverlay');
+            imageOverlay.style.display = 'none';
+        }
 
         function showGame() {
             gameSize = parseInt(document.getElementById("size").value);
@@ -388,7 +429,10 @@
                     return;
                 }
             }
-            alert("--WIN!--")
+            var winNotice = document.getElementById('winNotice');
+            winNotice.style.display = 'block';
+            var imageOverlay = document.getElementById('imageOverlay');
+            imageOverlay.style.display = 'block';
         }
 
         function moveTile(index) {
@@ -436,5 +480,4 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" integrity="sha512-fmdCs/JeC9e7skHwrFfm57ACpQBB2BDLcBpsGApFIdsnvP+QSPYMQJ0v8V0YWtPo3sSpLMp9GB0YF1yy87Z4UTw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </html>
