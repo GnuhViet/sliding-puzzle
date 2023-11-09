@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -143,6 +143,7 @@
                     <span id="difficultyOverlay" class="overlay wind-font">- Easy -</span>
                 </div>
                 <div class="menu-item">
+<<<<<<< HEAD
                     <button id="hintButton"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
                     <button class="homeButton"><i class="menu-icon fas fa-home glowing-txt"  title="Click to come back home!"></i></button>
                     <button id="giveupButton"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
@@ -173,8 +174,16 @@
         </div>
     </div>
 
+    <script src="puzzle-solve.js"></script>
     <script>
         let gameSize = null;
+        let easyMoveLimit = 0;
+        let mediumMoveLimit = 0;
+        let hardMoveLimit = 0;
+        let currentMove = 0;
+        let defaultMatrix = [];
+        let currentMatrix = [];
+        let emptyPos = 0;
 
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
         
@@ -317,8 +326,10 @@
                 return numberOfInversion % 2 !== 0;
         }
 
+
+        var sufferArr;
         function suffer() {
-            let sufferArr = [...Array(gameSize * gameSize).keys()]
+            sufferArr = [...Array(gameSize * gameSize).keys()]
             let lastItem = gameSize * gameSize - 1;
             
             for (let i = sufferArr.length - 1; i > 0; i--) {
@@ -356,7 +367,6 @@
             //         }
             //     }
             // }
-
             let originTiles = document.getElementById('origin').children;
             let tiles = document.getElementById('puzzle').children;
             
@@ -418,6 +428,7 @@
                 }
 
                 suffer();
+                init();
             }
             img.src = URL.createObjectURL(e.target.files[0]);
         }
@@ -448,16 +459,29 @@
                 }
             }
 
+            emptyPos = {
+                x: ~~ (emptyIndex / gameSize),
+                y: emptyIndex - gameSize * ~~(emptyIndex / gameSize)
+            }
+
             let clickedTile = tiles[index];
             let clickedIndex = index;
+            let clickedPos = {
+                x: ~~ (clickedIndex / gameSize),
+                y: clickedIndex - gameSize * ~~(clickedIndex / gameSize)
+            }
 
             if (isValidMove(clickedIndex, emptyIndex)) {
                 let tiles = document.getElementById('puzzle').children;
                 swapItem(tiles[emptyIndex], tiles[clickedIndex]);
-            }
 
-            winCheck(tiles)
+                [currentMatrix[emptyPos.x][emptyPos.y], currentMatrix[clickedPos.x][clickedPos.y]]
+                = [currentMatrix[clickedPos.x][clickedPos.y], currentMatrix[emptyPos.x][emptyPos.y]];
+            }
+            winCheck(tiles);
         }
+
+
 
         function isValidMove(clickedIndex, emptyIndex) {
             let ci = Math.floor(clickedIndex / gameSize);
@@ -472,10 +496,50 @@
                 || ci === ei && cj === ej - 1
         }
 
+        function init(){
+            for (i = 0; i < gameSize; i++){
+                temp = [];
+                for (j = 1; j <= gameSize; j++){
+                    temp.push(i * gameSize + j);
+                }
+                defaultMatrix.push(temp);
+            }
+            for (i = 0; i < gameSize; i++){
+                temp = [];
+                for (j = 0; j < gameSize; j++){
+                    let x = sufferArr[i * gameSize + j] + 1;
+                    temp.push(x);
+                    if (x == gameSize * gameSize) {
+                        emptyPos = {
+                            x: i,
+                            y: j,
+                        }
+                    }
+                }
+                currentMatrix.push(temp);
+            }
+            const solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
+            let totalMoves = solution.length;
+            hardMoveLimit = Math.ceil(totalMoves / 10) * 10;
+            mediumMoveLimit = hardMoveLimit * 3;
+            easyMoveLimit = hardMoveLimit * 5;
+        }
+
+        function onClickHint(){
+            let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
+            hint = solution.shift();
+            // write animation here 
+        }
+
+        function onClickGameOver(){
+            let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
+            // write animation here 
+        }
+
     </script>
 
 </body>
-<script src="/site.js" asp-append-version="true"></script>
+<script src="site.js" asp-append-version="true"></script>
 <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
