@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -145,12 +145,14 @@
                 </div>
                 <div class="menu-item">
                     <button class="" id="undoButton">Undo</button>
+                    <button class="" id="btnHint" onclick="onClickHint()">Hint</button>
                     <button class="" id="returnButton">Go to Home</i></button>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="hint.js"></script>
     <script>
         let gameSize = null;
 
@@ -279,8 +281,10 @@
                 return numberOfInversion % 2 !== 0;
         }
 
+
+        var sufferArr;
         function suffer() {
-            let sufferArr = [...Array(gameSize * gameSize).keys()]
+            sufferArr = [...Array(gameSize * gameSize).keys()]
             let lastItem = gameSize * gameSize - 1;
             
             for (let i = sufferArr.length - 1; i > 0; i--) {
@@ -318,7 +322,6 @@
             //         }
             //     }
             // }
-
             let originTiles = document.getElementById('origin').children;
             let tiles = document.getElementById('puzzle').children;
             
@@ -412,10 +415,10 @@
 
             if (isValidMove(clickedIndex, emptyIndex)) {
                 let tiles = document.getElementById('puzzle').children;
-                swapItem(tiles[emptyIndex], tiles[clickedIndex]);
+                swapItem(tiles[emptyIndex], tiles[clickedIndex]).then(function(){
+                    winCheck(tiles)
+                });
             }
-
-            winCheck(tiles)
         }
 
         function isValidMove(clickedIndex, emptyIndex) {
@@ -431,10 +434,26 @@
                 || ci === ei && cj === ej - 1
         }
 
+        function onClickHint(){
+            var default_matrix = [];
+            for (i = 1; i <= gameSize * gameSize; i++){
+                default_matrix.push(i);
+            }
+            var current_matrix = [];
+            var empty_pos = 0;
+            sufferArr.forEach((x, index) => {
+                current_matrix.push(x + 1);
+                if (x == gameSize * gameSize - 1){
+                    empty_pos = index;
+                }
+            })
+            const puzzleSolver = new PuzzleSolver(default_matrix, current_matrix, empty_pos, gameSize).solve();
+        }
+
     </script>
 
 </body>
-<script src="/site.js" asp-append-version="true"></script>
+<script src="site.js" asp-append-version="true"></script>
 <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
