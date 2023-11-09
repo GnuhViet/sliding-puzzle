@@ -7,7 +7,7 @@ class PuzzleSolver{
         this.queue = [];
         this.MAX_MOVES = 1000;
         this.number_of_moves = 0;
-        this.NULL_PIECE_INDEX = size * size;
+        this.NULL_PIECE_INDEX = size * size; 
     }
 
     get_possible_move(){
