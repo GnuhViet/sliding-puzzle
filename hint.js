@@ -7,7 +7,7 @@ class PuzzleSolver{
         this.queue = [];
         this.MAX_MOVES = 1000;
         this.number_of_moves = 0;
-        this.NULL_PIECE_INDEX = size * size; 
+        this.NULL_PIECE_INDEX = size * size;
     }
 
     get_possible_move(){
@@ -15,27 +15,31 @@ class PuzzleSolver{
         if (this.current_pos.x < this.size - 1)
             q.push({
                 x: this.current_pos.x + 1,
-                y: this.current_pos.y
+                y: this.current_pos.y,
+                g: this.number_of_moves,
             });
         if (this.current_pos.y < this.size - 1)
             q.push({
                 x: this.current_pos.x,
                 y: this.current_pos.y + 1,
+                g: this.number_of_moves,
             });
         if (this.current_pos.x > 0)
             q.push({
                 x: this.current_pos.x - 1,
-                y: this.current_pos.y
+                y: this.current_pos.y,
+                g: this.number_of_moves,
             });
         if (this.current_pos.y > 0)
             q.push({
                 x: this.current_pos.x,
-                y: this.current_pos.y - 1
+                y: this.current_pos.y - 1,
+                g: this.number_of_moves,
             });
         return q;
     }
 
-    find_node(val){
+    get_position(val){
         for (i = 0; i < this.size; ++i){
             for (j = 0; j < this.size; ++j){
                 if (this.current_matrix[i][j] == val) return {x: i, y: j};
@@ -46,9 +50,8 @@ class PuzzleSolver{
     calculate_move(temp_pos){
         let move = 0;
         let temp_matrix = this.current_matrix.map((x) => [...x]);
-        var node = this.find_node(this.NULL_PIECE_INDEX);
-        [temp_matrix[temp_pos.x][temp_pos.y], temp_matrix[node.x][node.y]]
-        = [temp_matrix[node.x][node.y], temp_matrix[temp_pos.x][temp_pos.y]];
+        [temp_matrix[temp_pos.x][temp_pos.y], temp_matrix[this.current_pos.x][this.current_pos.y]]
+        = [temp_matrix[this.current_pos.x][this.current_pos.y], temp_matrix[temp_pos.x][temp_pos.y]];
         var map_index = new Map();
         for (i = 0; i < this.size; i++) {
             for (j = 0; j < this.size; j++) {
@@ -58,6 +61,8 @@ class PuzzleSolver{
                 })
             }
         }
+
+        // manhattan
         for (i = 0; i < this.size * this.size; ++i){
             let final_node = {
                 x: ~~(i / this.size),
@@ -65,6 +70,15 @@ class PuzzleSolver{
             }
             move += ManHattanHeuristic.calculate_distance(map_index.get(i + 1), final_node);
         }
+
+        // hamming
+
+        for (i = 0; i < this.size; ++i){
+            for (j = 0; j < this.size; ++j){
+                if (temp_matrix[i][j] != this.default_matrix[i][j]) move++;
+            }
+        }
+
         return move;
     }
 
@@ -96,39 +110,20 @@ class PuzzleSolver{
         return true;
     }
 
-    get_col(pos){
-        return pos - this.size * ~~(pos / this.size)
-    }
-
-    get_row(pos){
-        return ~~(pos / this.size);
-    }
-
-    swap(p1, p2){
-        let temp = this.current_matrix[p1];
-        this.current_matrix[p1] = this.current_matrix[p2];
-        this.current_matrix[p2] = temp;
-    }
-
     solve(){
         do {
+            this.number_of_moves++;
             var possible_move = this.get_possible_move();
-            possible_move.forEach(element => {
-                this.queue.push(element);
-            });
+            possible_move.forEach((x) => this.queue.push(x));
             this.queue.sort((x, y) => 
-                this.calculate_move(x) - this.calculate_move(y)
+                (this.calculate_move(x) + x.g) < (this.calculate_move(y) + y.g)
             );
             let next_pos = this.queue.shift();
-            while (ManHattanHeuristic.calculate_distance(this.current_pos, next_pos) > 1 && this.queue.length > 0){
-                next_pos = this.queue.shift();
-            }
             var temp = this.current_matrix[this.current_pos.x][this.current_pos.y];
             this.current_matrix[this.current_pos.x][this.current_pos.y] = this.current_matrix[next_pos.x][next_pos.y];
             this.current_matrix[next_pos.x][next_pos.y] = temp;
             this.hint_log(next_pos);
             [this.current_pos, next_pos] = [next_pos, this.current_pos];
-            this.number_of_moves++;
         }
         while (this.number_of_moves < this.MAX_MOVES && !this.check_win());
         if (this.check_win()){

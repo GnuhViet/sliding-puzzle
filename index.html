@@ -152,7 +152,7 @@
         </div>
     </div>
 
-    <script src="hint.js"></script>
+    <script src="puzzle-solve.js"></script>
     <script>
         let gameSize = null;
 
@@ -415,10 +415,9 @@
 
             if (isValidMove(clickedIndex, emptyIndex)) {
                 let tiles = document.getElementById('puzzle').children;
-                swapItem(tiles[emptyIndex], tiles[clickedIndex]).then(function(){
-                    winCheck(tiles)
-                });
+                swapItem(tiles[emptyIndex], tiles[clickedIndex])
             }
+            winCheck(tiles);
         }
 
         function isValidMove(clickedIndex, emptyIndex) {
@@ -436,18 +435,39 @@
 
         function onClickHint(){
             var default_matrix = [];
-            for (i = 1; i <= gameSize * gameSize; i++){
-                default_matrix.push(i);
+            for (i = 0; i < gameSize; i++){
+                temp = [];
+                for (j = 1; j <= gameSize; j++){
+                    temp.push(i * gameSize + j);
+                }
+                default_matrix.push(temp);
             }
             var current_matrix = [];
             var empty_pos = 0;
-            sufferArr.forEach((x, index) => {
-                current_matrix.push(x + 1);
-                if (x == gameSize * gameSize - 1){
-                    empty_pos = index;
+            for (i = 0; i < gameSize; i++){
+                temp = [];
+                for (j = 0; j < gameSize; j++){
+                    let x = sufferArr[i * gameSize + j] + 1;
+                    temp.push(x);
+                    if (x == gameSize * gameSize) {
+                        empty_pos = {
+                            x: i,
+                            y: j,
+                            g: 0
+                        }
+                    }
                 }
-            })
-            const puzzleSolver = new PuzzleSolver(default_matrix, current_matrix, empty_pos, gameSize).solve();
+                current_matrix.push(temp);
+            }
+            console.log(current_matrix)
+            console.log(default_matrix)
+            console.log(empty_pos)
+            const solution = solvePuzzle(default_matrix, current_matrix, empty_pos, gameSize);
+            console.log(solution);
+            let total_moves = solution.length;
+            const hard_moves = Math.ceil(total_moves / 10) * 10;
+            const medium_moves = hard_moves * 3;
+            const easy_moves = hard_moves * 5;
         }
 
     </script>
