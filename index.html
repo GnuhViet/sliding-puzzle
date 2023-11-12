@@ -143,7 +143,7 @@
                     <span id="difficultyOverlay" class="overlay wind-font">- Easy -</span>
                 </div>
                 <div class="menu-item">
-                    <button id="hintButton"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
+                    <button id="hintButton" onclick="onClickHint()"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
                     <button class="homeButton"><i class="menu-icon fas fa-home glowing-txt"  title="Click to come back home!"></i></button>
                     <button id="giveupButton"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
                 </div>
@@ -527,10 +527,29 @@
             currentMove = 0;
         }
 
-        function onClickHint(){
+        //Gợi ý nước đi
+        function onClickHint() {
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
-            hint = solution.shift();
-            // write animation here 
+            let hint = solution.shift();
+            console.log(hint);
+            let currentEmptyIndex = emptyPos.x * gameSize + emptyPos.y;
+            let oppositeIndex = getOppositeIndex(currentEmptyIndex, hint, gameSize);
+            console.log(oppositeIndex);
+            moveTile(oppositeIndex);
+        }
+
+        function getOppositeIndex(emptyIndex, direction, gameSize) {
+            let emptyPos = {
+                x: Math.floor(emptyIndex / gameSize),
+                y: emptyIndex % gameSize
+            };
+
+            let oppositePos = {
+                x: emptyPos.x + (direction === 'down' ? -1 : (direction === 'up' ? 1 : 0)),
+                y: emptyPos.y + (direction === 'right' ? -1 : (direction === 'left' ? 1 : 0))
+            };
+
+            return oppositePos.x * gameSize + oppositePos.y;
         }
 
         function onClickGameOver(){
