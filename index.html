@@ -145,7 +145,7 @@
                 <div class="menu-item">
                     <button id="hintButton" onclick="onClickHint()"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
                     <button class="homeButton"><i class="menu-icon fas fa-home glowing-txt"  title="Click to come back home!"></i></button>
-                    <button id="giveupButton"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
+                    <button id="giveupButton" onclick="onClickGameOver()"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
                 </div>
             </div>
             <div class="puzzle" id="origin"></div>
@@ -161,7 +161,7 @@
                 </div>
             </div>
 
-            <div id="lostNotice">
+            <!-- <div id="lostNotice">
                 <div class="result">
                     <h2 class="glowing-txt result-item">OOPSIE!</h2>
                     <p class="result-item">You can't even solve this game for kid!</p>
@@ -169,7 +169,7 @@
                     <p class="result-item">Time left: <span id="timeLeft">0 seconds</span></p>
                     <button class="homeButton"><i class="result-item fas fa-home glowing-txt"></i></button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -554,7 +554,24 @@
 
         function onClickGameOver(){
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
-            // write animation here 
+            // write animation here
+            console.log(solution);
+            moveNextTile(solution, 0);
+        }
+
+        function moveNextTile(solution, index) {
+            let currentEmptyIndex = emptyPos.x * gameSize + emptyPos.y;
+            if (index < solution.length) {
+                let hint = solution[index];
+                console.log(hint);
+                let oppositeIndex = getOppositeIndex(currentEmptyIndex, hint, gameSize);
+                moveTile(oppositeIndex);
+
+                // Gọi đệ quy để di chuyển ô tiếp theo sau một khoảng thời gian độ trễ
+                setTimeout(function () {
+                    moveNextTile(solution, index + 1);
+                }, 500);
+            }
         }
 
     </script>
