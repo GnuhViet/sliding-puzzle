@@ -1,4 +1,4 @@
-function setActiveButton(index) {
+function setLevelButton(index) {
     var buttons = document.getElementsByClassName('level-button');
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].classList.remove('active');
@@ -9,35 +9,40 @@ function setActiveButton(index) {
 
     switch (index) {
         case 0:
-            difficultyOverlay.textContent = '-Easy-';
+            difficultyOverlay.textContent = 'Easy';
+            level = EASY_LEVEL;
             break;
         case 1:
             difficultyOverlay.textContent = 'Medium';
+            level = MEDIUM_LEVEL;
             break;
         case 2:
-            difficultyOverlay.textContent = '-Hard-';
+            difficultyOverlay.textContent = 'Hard';
+            level = HARD_LEVEL;
             break;
         default:
+            difficultyOverlay.textContent = 'Easy';
+            level = EASY_LEVEL;
             break;
     }
 
-    let moveCountElement = document.getElementById('moveCount');
+    // let moveCountElement = document.getElementById('moveCount');
 
-    switch (index) {
-      case 0:
-        leftMove = easyMoveLimit - currentMove;
-        break;
-      case 1:
-        leftMove = mediumMoveLimit - currentMove;
-        break;
-      case 2:
-        leftMove = hardMoveLimit - currentMove;
-        break;
-      default:
-        break;
-    }
+    // switch (index) {
+    //   case 0:
+    //     leftMove = easyMoveLimit - currentMove;
+    //     break;
+    //   case 1:
+    //     leftMove = mediumMoveLimit - currentMove;
+    //     break;
+    //   case 2:
+    //     leftMove = hardMoveLimit - currentMove;
+    //     break;
+    //   default:
+    //     break;
+    // }
 
-    moveCountElement.textContent = leftMove;
+    // moveCountElement.textContent = leftMove;
 }
 
 
@@ -152,7 +157,7 @@ function setMode(mode) {
   var notChooseColor = '#9d0938'; 
 
   document.documentElement.style.setProperty('--challenge', mode === 'CHALLENGE' ? chooseColor : notChooseColor);
-  document.documentElement.style.setProperty('--zen', mode === 'ZENMODE' ? chooseColor : notChooseColor);
+  document.documentElement.style.setProperty('--zen', mode === 'ZEN' ? chooseColor : notChooseColor);
  
  
   var challengeButton = document.getElementById('challengeButton');
@@ -161,16 +166,18 @@ function setMode(mode) {
   challengeButton.classList.toggle('glowing-btn', mode === 'CHALLENGE');
   challengeButton.querySelector('span').classList.toggle('glowing-txt', mode === 'CHALLENGE');
 
-  zenButton.classList.toggle('glowing-btn', mode === 'ZENMODE');
-  zenButton.querySelector('span').classList.toggle('glowing-txt', mode === 'ZENMODE');
+  zenButton.classList.toggle('glowing-btn', mode === 'ZEN');
+  zenButton.querySelector('span').classList.toggle('glowing-txt', mode === 'ZEN');
   
-  challengeButton.classList.toggle('not-choose-this', mode === 'ZENMODE');
+  challengeButton.classList.toggle('not-choose-this', mode === 'ZEN');
   zenButton.classList.toggle('not-choose-this', mode === 'CHALLENGE');
 
   var moveElements = document.querySelectorAll('.move');
   moveElements.forEach(function (moveElement) {
-    moveElement.classList.toggle('zen-mode', mode === 'ZENMODE');
+    moveElement.classList.toggle('zen-mode', mode === 'ZEN');
   });
+
+  currentMode = mode;
 
   console.log('Current mode:', mode);
 }

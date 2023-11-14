@@ -68,7 +68,7 @@ class PuzzleNode {
   
 function solvePuzzle(defaultMatrix, currentMatrix, currentPos, gameSize) {
     console.log("On calculating...");
-    const MAX_MOVES = 1000000;
+    const MAX_MOVES = 10000;
     const startNode = new PuzzleNode(currentMatrix, currentPos);
     const goalNode = new PuzzleNode(defaultMatrix, { x: gameSize - 1, y: gameSize - 1 });
 
@@ -99,6 +99,7 @@ function solvePuzzle(defaultMatrix, currentMatrix, currentPos, gameSize) {
                 }
                 current = current.parent;
             }
+            console.log("Find solution!")
             return path.reverse();
         }
 
@@ -112,6 +113,7 @@ function solvePuzzle(defaultMatrix, currentMatrix, currentPos, gameSize) {
             }
         }
     }
+    console.log("Exceeded data")
     return null;
 }
 
