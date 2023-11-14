@@ -143,9 +143,9 @@
                     <span id="difficultyOverlay" class="overlay wind-font">- Easy -</span>
                 </div>
                 <div class="menu-item">
-                    <button id="hintButton"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
+                    <button id="hintButton"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!" onclick="onClickHint()"></i></button>
                     <button class="homeButton"><i class="menu-icon fas fa-home glowing-txt"  title="Click to come back home!"></i></button>
-                    <button id="giveupButton"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
+                    <button id="giveupButton"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!" onclick="onClickGameOver()"></i></button>
                 </div>
             </div>
             <div class="puzzle" id="origin"></div>
@@ -536,6 +536,7 @@
 
         function onClickGameOver(){
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
+            console.log(solution)
             // write animation here 
         }
 
