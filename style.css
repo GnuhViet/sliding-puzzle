@@ -560,9 +560,16 @@ button:active:not(:focus-visible) {
 
 .menu-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2em;
+  line-height: normal;
+  margin-bottom: 1em;
+}
+
+.menu-item:last-child{
+  flex-direction: row;
+  gap: 2em
 }
 
 .menu-label {
@@ -635,6 +642,7 @@ button:active:not(:focus-visible) {
   animation: lights 5s 750ms linear infinite;
   font: 100% / 1.5 Raleway, sans-serif;
   line-height: 1;
+  display: block;
 }
 
 .wind-font{
@@ -803,17 +811,125 @@ input[type=file]::file-selector-button:hover {
   z-index: 1;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  width: fit-content;
+  height: 25%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  background-color: transparent;
+  margin: 15% auto;
+  padding: 20px;
+  width: 30%;
+  text-align: center;
+  color: transparent;
+  -webkit-text-stroke: 1px white;
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  position: relative;
+  margin: 0 32px;
+}
+
+.modal:before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  bottom: 0;
+  left: 0;
+  border-radius: 10px;
+  animation: movingLine 2.4s infinite ease-in-out;
+}
+
+@keyframes movingLine {
+  0% {
+    opacity: 0;
+    width: 0;
+  }
+
+  33.3%, 66% {
+    opacity: 0.8;
+    width: 100%;
+  }
+
+  85% {
+    width: 0;
+    left: initial;
+    right: 0;
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    width: 0;
+  }
 }
 
 .modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 30%;
-  text-align: center;
+  font-size: 5vw;
+  line-height: 64px;
+  letter-spacing: 10px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-evenly;
+  background-color: transparent !important;
+}
+
+.modal-content span {
+  animation: moveLetters 2.4s infinite ease-in-out;
+  transform: translateX(0);
+  position: relative;
+  display: inline-block;
+  opacity: 0;
+  text-shadow: 2px 2px 10px var(--glow-color);
+}
+
+.loading-text span:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.loading-text span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-text span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.loading-text span:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.loading-text span:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.loading-text span:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+.loading-text span:nth-child(7) {
+  animation-delay: 0.7s;
+}
+
+
+@keyframes moveLetters {
+  0% {
+    transform: translateX(-15vw);
+    opacity: 0;
+  }
+
+  33.3%, 66% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(15vw);
+    opacity: 0;
+  }
 }

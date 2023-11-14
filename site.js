@@ -25,24 +25,6 @@ function setLevelButton(index) {
             level = EASY_LEVEL;
             break;
     }
-
-    // let moveCountElement = document.getElementById('moveCount');
-
-    // switch (index) {
-    //   case 0:
-    //     leftMove = easyMoveLimit - currentMove;
-    //     break;
-    //   case 1:
-    //     leftMove = mediumMoveLimit - currentMove;
-    //     break;
-    //   case 2:
-    //     leftMove = hardMoveLimit - currentMove;
-    //     break;
-    //   default:
-    //     break;
-    // }
-
-    // moveCountElement.textContent = leftMove;
 }
 
 
@@ -114,10 +96,17 @@ var giveupButton = document.getElementById('giveupButton');
 var lostNotice = document.getElementById('lostNotice');
 
 giveupButton.addEventListener('click', function() {
+  lostCheck();
+});
+
+function lostCheck(){
   lostNotice.style.display = 'block';
   var imageOverlay = document.getElementById('imageOverlay');
   imageOverlay.style.display = 'block';
-});
+
+  stopTimer();
+  document.getElementById("timeLost").textContent = finalTime;
+}
 
 var timeCount = document.getElementById('timeCount');
 var seconds = 0;
@@ -145,6 +134,10 @@ function startTimer() {
     timerInterval = setInterval(updateTimer, 1000);
 }
 
+function stopTimer() {
+  clearInterval(timerInterval);
+  finalTime = timeCount.textContent;
+}
 
 // Chọn thì thay css
 

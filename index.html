@@ -129,32 +129,24 @@
             <div id="sidemenu">
                 <div class="menu-item">
                     <span class="menu-label">- Time -</span>
-                </div>
-                <div class="menu-item">
                     <span class="menu-label count" id="timeCount">00:00</span>
                 </div>
                 <div class="menu-item move">
                     <span class="menu-label">- Move -</span>
-                </div>
-                <div class="menu-item move">
                     <span class="menu-label count" id="moveCount">0</span>
                 </div>
                 <div class="menu-item move">
                     <span class="menu-label">- Allow hint -</span>
-                </div>
-                <div class="menu-item move">
                     <span class="menu-label count" id="allowHint">0</span>
                 </div>
                 <div class="menu-item">
-                    <span class="menu-label">- Each hint move -</span>
-                </div>
-                <div class="menu-item">
+                    <span class="menu-label">- Move per hint -</span>
                     <span class="menu-label count" id="eachHintMove">0</span>
                 </div>
                 
                 <div class="menu-item">
-                    <span id="difficulty" class="city-night">CHALLENGE</span>
-                    <span id="difficultyOverlay" class="overlay wind-font">- Easy -</span>
+                    <span id="difficulty" class="city-night">CHALLENGE</br></span>
+                    <span id="difficultyOverlay" class="city-night">- Easy -</span>
                 </div>
                 <div class="menu-item">
                     <button id="hintButton" onclick="onClickHint()"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
@@ -169,8 +161,8 @@
                 <div class="result">
                     <h2 class="glowing-txt result-item">Congratulations!</h2>
                     <p class="result-item">You've won the game!</p>
-                    <p class="result-item">Move left: <span id="moveLeft">0</span></p>
-                    <p class="result-item">Time left: <span id="timeLeft">0 seconds</span></p>
+                    <p class="result-item move">Move: <span id="moveLeft">0</span></p>
+                    <p class="result-item">Time: <span id="timePass">0 seconds</span></p>
                     <button class="homeButton"><i class="result-item fas fa-home glowing-txt"></i></button>
                 </div>
             </div>
@@ -179,8 +171,7 @@
                 <div class="result">
                     <h2 class="glowing-txt result-item">OOPSIE!</h2>
                     <p class="result-item">You can't even solve this game for kid!</p>
-                    <p class="result-item">Move left: <span id="moveLeft">0</span></p>
-                    <p class="result-item">Time left: <span id="timeLeft">0 seconds</span></p>
+                    <p class="result-item">Get defeated after <span id="timeLost">0 seconds</span></p>
                     <button class="homeButton"><i class="result-item fas fa-home glowing-txt"></i></button>
                 </div>
             </div>
@@ -189,9 +180,16 @@
 
     <div id="loadingModal" class="modal">
         <div class="modal-content">
-            <p>Loading...</p>
+          <span>L</span>
+          <span>O</span>
+          <span>A</span>
+          <span>D</span>
+          <span>I</span>
+          <span>N</span>
+          <span>G</span>
         </div>
-    </div>
+      </div>
+      
 
     <script src="puzzle-solve.js"></script>
     <script>
@@ -467,6 +465,10 @@
             winNotice.style.display = 'block';
             var imageOverlay = document.getElementById('imageOverlay');
             imageOverlay.style.display = 'block';
+            document.getElementById("moveLeft").textContent = moveLimit;
+
+            stopTimer();
+            document.getElementById("timePass").textContent = finalTime;
         }
 
         function moveTile(index) {
@@ -505,6 +507,9 @@
                 
                 currentMove++;
                 moveLimit--;
+                    if (moveLimit == 0) {
+                        lostCheck();
+                    }
                 setMoveLimit();
             }
             winCheck(tiles);
@@ -524,7 +529,7 @@
         }
 
         function setMoveLimit(){
-            document.getElementById("moveCount").textContent = moveLimit;
+            document.getElementById("moveCount").textContent = moveLimit;        
         }
 
         function init(){
