@@ -10,8 +10,9 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=WindSong&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=WindSong&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+    <script src="env.js"></script>
 <head>
     <style>
         .puzzle {
@@ -75,7 +76,7 @@
     <div class="container" id="menu">
         <div class="logo shadow ">
             <div class="shadow glowing-txt">
-                Sliding </br> </div>
+                Sliding <br> </div>
             <div class="pink shadow"> Pu<span class="faulty-letter">zz</span>le </div>
         </div>
         <div id="warning-message">
@@ -85,7 +86,7 @@
         <button class="menu-button glowing-btn shadow" onclick="toggleFileInput()"><span class='glowing-txt'>PLAY</span></button>
         <div class="menu-button slanted">
             <button id="challengeButton" class="glowing-btn" onclick="setMode('CHALLENGE'); changecolor(this);"><span class='glowing-txt'>Challenge</span></button>
-            <button id="zenButton" class="not-choose-this" onclick="setMode('ZENMODE'); changeColor(this);"><span class='zen-text'>Zen</span></button>
+            <button id="zenButton" class="not-choose-this" onclick="setMode('ZEN'); changeColor(this);"><span class='zen-text'>Zen</span></button>
           </div>
         <div class="menu-button button-container">
             <div class="arrow-left">
@@ -93,9 +94,9 @@
                 <span></span>
                 <span></span>
             </div>
-            <button class="level-button active glowing-btn" onclick="setActiveButton(0)"><span class='glowing-txt'>Easy</span></button>
-            <button class="level-button glowing-btn" onclick="setActiveButton(1)"><span class='glowing-txt'>Medium</span></button>
-            <button class="level-button glowing-btn" onclick="setActiveButton(2)"><span class='glowing-txt'>Hard</span></button>
+            <button class="level-button active glowing-btn" onclick="setLevelButton(0)"><span class='glowing-txt'>Easy</span></button>
+            <button class="level-button glowing-btn" onclick="setLevelButton(1)"><span class='glowing-txt'>Medium</span></button>
+            <button class="level-button glowing-btn" onclick="setLevelButton(2)"><span class='glowing-txt'>Hard</span></button>
             <div class="arrow-right">
                 <span></span>
                 <span></span>
@@ -139,13 +140,26 @@
                     <span class="menu-label count" id="moveCount">0</span>
                 </div>
                 <div class="menu-item">
+                    <span class="menu-label">- Allow hint -</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-label count" id="allowHint">0</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-label">- Each hint move -</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-label count" id="eachHintMove">0</span>
+                </div>
+                
+                <div class="menu-item">
                     <span id="difficulty" class="city-night">CHALLENGE</span>
                     <span id="difficultyOverlay" class="overlay wind-font">- Easy -</span>
                 </div>
                 <div class="menu-item">
-                    <button id="hintButton"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!" onclick="onClickHint()"></i></button>
+                    <button id="hintButton" onclick="onClickHint()"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
                     <button class="homeButton"><i class="menu-icon fas fa-home glowing-txt"  title="Click to come back home!"></i></button>
-                    <button id="giveupButton"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!" onclick="onClickGameOver()"></i></button>
+                    <button id="giveupButton" onclick="onClickGameOver()"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
                 </div>
             </div>
             <div class="puzzle" id="origin"></div>
@@ -161,7 +175,7 @@
                 </div>
             </div>
 
-            <div id="lostNotice">
+            <!-- <div id="lostNotice">
                 <div class="result">
                     <h2 class="glowing-txt result-item">OOPSIE!</h2>
                     <p class="result-item">You can't even solve this game for kid!</p>
@@ -169,16 +183,17 @@
                     <p class="result-item">Time left: <span id="timeLeft">0 seconds</span></p>
                     <button class="homeButton"><i class="result-item fas fa-home glowing-txt"></i></button>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
     <script src="puzzle-solve.js"></script>
     <script>
         let gameSize = null;
-        let easyMoveLimit = 0;
-        let mediumMoveLimit = 0;
-        let hardMoveLimit = 0;
+        let level = "EASY";
+        let moveLimit = 0;
+        let allowHint = 0;
+        let eachHintMove = 0;
         let currentMove = 0;
         let defaultMatrix = [];
         let currentMatrix = [];
@@ -479,7 +494,11 @@
                 [currentMatrix[emptyPos.x][emptyPos.y], currentMatrix[clickedPos.x][clickedPos.y]]
                 = [currentMatrix[clickedPos.x][clickedPos.y], currentMatrix[emptyPos.x][emptyPos.y]];
 
+                [emptyPos, clickedPos] = [clickedPos, emptyPos];
+                
                 currentMove++;
+                moveLimit--;
+                setMoveLimit();
             }
             winCheck(tiles);
         }
@@ -495,6 +514,10 @@
                 || ci === ei - 1 && cj === ej
                 || ci === ei && cj === ej + 1
                 || ci === ei && cj === ej - 1
+        }
+
+        function setMoveLimit(){
+            document.getElementById("moveCount").textContent = moveLimit;
         }
 
         function init(){
@@ -519,22 +542,124 @@
                 }
                 currentMatrix.push(temp);
             }
-            hardMoveLimit = (gameSize + 1) * 10;
-            mediumMoveLimit = hardMoveLimit * 2;
-            easyMoveLimit = hardMoveLimit * 5;
+            
+            let hardMoveLimit = (gameSize + 1) * 10;
+            let mediumMoveLimit = hardMoveLimit * 2;
+            let easyMoveLimit = hardMoveLimit * 5;
+            switch (level){
+                case EASY_LEVEL:
+                    moveLimit = easyMoveLimit;
+                    allowHint = EASY_ALLOW_HINT;
+                    eachHintMove = EASY_HINT_MOVE;
+                    break;
+                case MEDIUM_LEVEL:
+                    moveLimit = mediumMoveLimit;
+                    allowHint = MEDIUM_ALLOW_HINT;
+                    eachHintMove = MEDIUM_HINT_MOVE;
+                    break;
+                case HARD_LEVEL:
+                    moveLimit = hardMoveLimit;
+                    allowHint = HARD_ALLOW_HINT;
+                    eachHintMove = HARD_HINT_MOVE;
+                    break;    
+                default:
+                    moveLimit = easyMoveLimit;
+                    allowHint = EASY_ALLOW_HINT;
+                    eachHintMove = EASY_HINT_MOVE;
+            }
             currentMove = 0;
+            setMoveLimit();
+            document.getElementById("allowHint").textContent = allowHint;
+            document.getElementById("eachHintMove").textContent = eachHintMove;
         }
 
-        function onClickHint(){
+
+        //Gợi ý nước đi
+        function onClickHint() {
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
-            hint = solution.shift();
-            // write animation here 
+            let hint = solution.slice(0, eachHintMove);
+            if (allowHint == 0) {
+                document.getElementById("hintButton").disabled = true;
+                return;
+            }
+            allowHint--;
+            document.getElementById("allowHint").textContent = allowHint;
+            moveNextTile(hint, 0);
+            //let currentEmptyIndex = emptyPos.x * gameSize + emptyPos.y;
+            //let oppositeIndex = getOppositeIndex(currentEmptyIndex, hint, gameSize);
+            //console.log(oppositeIndex);
+            //moveTile(oppositeIndex);
+        }
+
+        function getOppositeIndex(emptyIndex, direction, gameSize) {
+            let emptyPos = {
+                x: Math.floor(emptyIndex / gameSize),
+                y: emptyIndex % gameSize
+            };
+
+            let oppositePos = {
+                x: emptyPos.x + (direction === 'down' ? -1 : (direction === 'up' ? 1 : 0)),
+                y: emptyPos.y + (direction === 'right' ? -1 : (direction === 'left' ? 1 : 0))
+            };
+
+            return oppositePos.x * gameSize + oppositePos.y;
+        }
+
+        function getMove(direction){
+            switch(direction){
+                case 'down':
+                    emptyPos = {
+                        x: emptyPos.x - 1,
+                        y: emptyPos.y
+                    };
+                    break;
+                case 'up':
+                    emptyPos = {
+                        x: emptyPos.x + 1,
+                        y: emptyPos.y
+                    };
+                    break;
+                case 'right':
+                    emptyPos = {
+                        x: emptyPos.x ,
+                        y: emptyPos.y - 1
+                    };
+                    break;
+                case 'left':
+                    emptyPos = {
+                        x: emptyPos.x,
+                        y: emptyPos.y + 1
+                    };
+                    break;
+            }
+            return convert2Dto1Dpoint(emptyPos);
+        }
+
+        function convert2Dto1Dpoint(point){
+            return point.x * gameSize + point.y;
         }
 
         function onClickGameOver(){
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
-            console.log(solution)
-            // write animation here 
+            // write animation here
+            console.log(solution);
+            moveNextTile(solution, 0);
+        }
+
+        function moveNextTile(solution, index) {
+            let currentEmptyIndex = emptyPos.x * gameSize + emptyPos.y;
+            if (index < solution.length) {
+                let hint = solution[index];
+                console.log(hint);
+                //let oppositeIndex = getOppositeIndex(currentEmptyIndex, hint, gameSize);
+                let move = getMove(hint)
+                moveTile(move);
+
+                // Gọi đệ quy để di chuyển ô tiếp theo sau một khoảng thời gian độ trễ
+                setTimeout(function () {
+                    moveNextTile(solution, index + 1);
+                }, 200);
+            }
         }
 
     </script>
