@@ -139,10 +139,10 @@
                 <div class="menu-item move">
                     <span class="menu-label count" id="moveCount">0</span>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item move">
                     <span class="menu-label">- Allow hint -</span>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item move">
                     <span class="menu-label count" id="allowHint">0</span>
                 </div>
                 <div class="menu-item">
@@ -193,11 +193,12 @@
         let level = "EASY";
         let moveLimit = 0;
         let allowHint = 0;
-        let eachHintMove = 0;
+        let eachHintMove = 5;
         let currentMove = 0;
         let defaultMatrix = [];
         let currentMatrix = [];
         let emptyPos = 0;
+        let currentMode = CHALLENGE_MODE;
 
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
         
@@ -578,7 +579,7 @@
         function onClickHint() {
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
             let hint = solution.slice(0, eachHintMove);
-            if (allowHint == 0) {
+            if (allowHint == 0 && currentMode == CHALLENGE_MODE) {
                 document.getElementById("hintButton").disabled = true;
                 return;
             }
@@ -658,7 +659,7 @@
                 // Gọi đệ quy để di chuyển ô tiếp theo sau một khoảng thời gian độ trễ
                 setTimeout(function () {
                     moveNextTile(solution, index + 1);
-                }, 200);
+                }, 400);
             }
         }
 

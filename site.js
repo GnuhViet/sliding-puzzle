@@ -177,5 +177,7 @@ function setMode(mode) {
     moveElement.classList.toggle('zen-mode', mode === 'ZEN');
   });
 
+  currentMode = mode;
+
   console.log('Current mode:', mode);
 }
