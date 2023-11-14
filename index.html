@@ -519,10 +519,8 @@
                 }
                 currentMatrix.push(temp);
             }
-            const solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
-            let totalMoves = solution.length;
-            hardMoveLimit = Math.ceil(totalMoves / 10) * 10;
-            mediumMoveLimit = hardMoveLimit * 3;
+            hardMoveLimit = (gameSize + 1) * 10;
+            mediumMoveLimit = hardMoveLimit * 2;
             easyMoveLimit = hardMoveLimit * 5;
             currentMove = 0;
         }
