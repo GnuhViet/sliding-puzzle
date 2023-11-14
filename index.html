@@ -84,8 +84,8 @@
         </div>
         <button class="menu-button glowing-btn shadow" onclick="toggleFileInput()"><span class='glowing-txt'>PLAY</span></button>
         <div class="menu-button slanted">
-            <button class="glowing-btn"><span class='glowing-txt'>AI Mode</span></button>
-            <button class="not-choose-this"><span class='zen-text'>Zen</span></button>
+            <button id="challengeButton" class="glowing-btn" onclick="setMode('CHALLENGE'); changecolor(this);"><span class='glowing-txt'>Challenge</span></button>
+            <button id="zenButton" class="not-choose-this" onclick="setMode('ZENMODE'); changeColor(this);"><span class='zen-text'>Zen</span></button>
           </div>
         <div class="menu-button button-container">
             <div class="arrow-left">
@@ -109,13 +109,13 @@
         </div>
     </div>
 
-    <div id="imageOverlay" class="imageOverlay"></div>
+    <div id="imageOverlay" onclick="location.reload();" class="imageOverlay"></div>
 
-    <div style="display: none;" class="file" id="fileContainer">
+    <div class="file" id="fileContainer">
         <label for="file" class="drop-container" id="dropcontainer">
             <span class="drop-title">Drop files here</span>
             or
-            <input type="file" id="imageLoader" onchange="hideFileInput()" name="imageLoader" onclick="showGame()"accept="image/*" required>
+            <input type="file" id="imageLoader" onchange="hideFileInput(); showGame();" name="imageLoader" accept="image/*" required>
           </label>
     </div>
 
@@ -132,14 +132,14 @@
                 <div class="menu-item">
                     <span class="menu-label count" id="timeCount">00:00</span>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item move">
                     <span class="menu-label">- Move -</span>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item move">
                     <span class="menu-label count" id="moveCount">0</span>
                 </div>
                 <div class="menu-item">
-                    <span class="city-night">AImode</span>
+                    <span id="difficulty" class="city-night">CHALLENGE</span>
                     <span id="difficultyOverlay" class="overlay wind-font">- Easy -</span>
                 </div>
                 <div class="menu-item">
@@ -183,7 +183,6 @@
         let defaultMatrix = [];
         let currentMatrix = [];
         let emptyPos = 0;
-        let mode = 'Zen';
 
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
         
@@ -219,6 +218,8 @@
             puzzle.style.gridTemplateRows = `repeat(${gameSize}, ${width / gameSize}px)`;
             origin.style.gridTemplateColumns = `repeat(${gameSize}, ${width / gameSize}px)`;
             origin.style.gridTemplateRows = `repeat(${gameSize}, ${width / gameSize}px)`;
+
+            startTimer();
         }
 
         function getItemNumber(x) {
@@ -482,8 +483,6 @@
             }
             winCheck(tiles);
         }
-
-
 
         function isValidMove(clickedIndex, emptyIndex) {
             let ci = Math.floor(clickedIndex / gameSize);
