@@ -555,29 +555,29 @@
                 currentMatrix.push(temp);
             }
             
-            let hardMoveLimit = (gameSize + 1) * 10;
+            let hardMoveLimit = (gameSize * gameSize) * (gameSize + gameSize - 1);
             let mediumMoveLimit = hardMoveLimit * 2;
             let easyMoveLimit = hardMoveLimit * 5;
             switch (level){
                 case EASY_LEVEL:
                     moveLimit = easyMoveLimit;
-                    allowHint = EASY_ALLOW_HINT;
-                    eachHintMove = EASY_HINT_MOVE;
+                    allowHint = EASY_ALLOW_HINT * (gameSize - 1);
+                    eachHintMove = EASY_HINT_MOVE * gameSize;
                     break;
                 case MEDIUM_LEVEL:
                     moveLimit = mediumMoveLimit;
-                    allowHint = MEDIUM_ALLOW_HINT;
-                    eachHintMove = MEDIUM_HINT_MOVE;
+                    allowHint = MEDIUM_ALLOW_HINT * (gameSize - 1);
+                    eachHintMove = MEDIUM_HINT_MOVE * gameSize;
                     break;
                 case HARD_LEVEL:
                     moveLimit = hardMoveLimit;
-                    allowHint = HARD_ALLOW_HINT;
-                    eachHintMove = HARD_HINT_MOVE;
+                    allowHint = HARD_ALLOW_HINT * (gameSize - 1);
+                    eachHintMove = HARD_HINT_MOVE * gameSize;
                     break;    
                 default:
                     moveLimit = easyMoveLimit;
-                    allowHint = EASY_ALLOW_HINT;
-                    eachHintMove = EASY_HINT_MOVE;
+                    allowHint = EASY_ALLOW_HINT * (gameSize - 1);
+                    eachHintMove = EASY_HINT_MOVE * gameSize;
             }
             currentMove = 0;
             setMoveLimit();
@@ -591,6 +591,7 @@
             showLoadingModal();
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
             let hint = solution.slice(0, eachHintMove);
+            console.log(hint);
             if (allowHint == 0 && currentMode == CHALLENGE_MODE) {
                 document.getElementById("hintButton").disabled = true;
                 return;
@@ -648,9 +649,10 @@
         }
 
         function onClickGameOver(){
-            let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
-            // write animation here
-            moveNextTile(solution, 0);
+            if (gameSize <= 3){
+                let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
+                moveNextTile(solution, 0);
+            }
         }
 
         function moveNextTile(solution, index, callback) {

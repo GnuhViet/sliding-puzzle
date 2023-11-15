@@ -68,39 +68,22 @@ class PuzzleNode {
   
 function solvePuzzle(defaultMatrix, currentMatrix, currentPos, gameSize) {
     console.log("On calculating...");
-    const MAX_MOVES = 10000;
+    const MAX_MOVES = 3000;
     const startNode = new PuzzleNode(currentMatrix, currentPos);
     const goalNode = new PuzzleNode(defaultMatrix, { x: gameSize - 1, y: gameSize - 1 });
 
     const openSet = [startNode];
     const closedSet = new Set();
     
-    let moves = 0;
-    while (openSet.length > 0 && moves < MAX_MOVES) {
+    while (openSet.length > 0) {
+        if (openSet.length >= MAX_MOVES){
+          break;
+        }
         openSet.sort((a, b) => a.f - b.f);
         const currentNode = openSet.shift();
-        moves++;
         if (JSON.stringify(currentNode.matrix) === JSON.stringify(goalNode.matrix)) {
         // Puzzle is solved, reconstruct the path
-            const path = [];
-            let current = currentNode;
-            while (current.parent !== null) {
-                let parentPos = current.parent.pos;
-                let currentPos = current.pos;
-
-                if (parentPos.x < currentPos.x) {
-                    path.push('up');
-                } else if (parentPos.x > currentPos.x) {
-                    path.push('down');
-                } else if (parentPos.y < currentPos.y) {
-                    path.push('left');
-                } else if (parentPos.y > currentPos.y) {
-                    path.push('right');
-                }
-                current = current.parent;
-            }
-            console.log("Find solution!")
-            return path.reverse();
+            return getPath(currentNode);
         }
 
         closedSet.add(JSON.stringify(currentNode.matrix));
@@ -108,13 +91,40 @@ function solvePuzzle(defaultMatrix, currentMatrix, currentPos, gameSize) {
         const children = currentNode.generateChildren();
         for (const child of children) {
             const childKey = JSON.stringify(child.matrix);
-            if (!closedSet.has(childKey) && !openSet.some(node => JSON.stringify(node.matrix) === childKey)) {
+            if (!closedSet.has(childKey) && !openSet.some(node => JSON.stringify(node.matrix) === childKey)
+                && !openSet.length < MAX_MOVES) {
                 openSet.push(child);
             }
         }
     }
+    if (openSet.length > 0){
+      const currentNode = openSet.shift();
+      return getPath(currentNode);
+    }
     console.log("Exceeded data")
     return null;
+}
+
+function getPath(currentNode){
+  const path = [];
+  let current = currentNode;
+  while (current.parent !== null) {
+      let parentPos = current.parent.pos;
+      let currentPos = current.pos;
+
+      if (parentPos.x < currentPos.x) {
+          path.push('up');
+      } else if (parentPos.x > currentPos.x) {
+          path.push('down');
+      } else if (parentPos.y < currentPos.y) {
+          path.push('left');
+      } else if (parentPos.y > currentPos.y) {
+          path.push('right');
+      }
+      current = current.parent;
+  }
+  console.log("Find solution!")
+  return path.reverse();
 }
 
   
