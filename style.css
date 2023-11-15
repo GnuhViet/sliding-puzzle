@@ -565,6 +565,8 @@ button:active:not(:focus-visible) {
   justify-content: center;
   line-height: normal;
   margin-bottom: 1em;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .menu-item:last-child{
@@ -581,7 +583,7 @@ button:active:not(:focus-visible) {
 	transition: all 1s ease-in-out;
 	text-align: center;
 	letter-spacing: 0.2em;
-  font-size: 1.5em;
+  font-size: 1.25em;
 	animation: flicker 10s ease-in-out infinite alternate;
 
 	&:hover {
@@ -601,7 +603,7 @@ button:active:not(:focus-visible) {
 }
 
 .count{
-	font-size: 5em;
+	font-size: 4em;
 	color: transparent;
 }
 
@@ -638,7 +640,7 @@ button:active:not(:focus-visible) {
 
 .city-night {
   color:#fff;
-  font-size: 2em !important;
+  font-size: 1.5em !important;
   animation: lights 5s 750ms linear infinite;
   font: 100% / 1.5 Raleway, sans-serif;
   line-height: 1;
