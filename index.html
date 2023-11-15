@@ -597,6 +597,9 @@
             }
             allowHint--;
             document.getElementById("allowHint").textContent = allowHint;
+            if(allowHint == 0){
+                document.getElementById("hintButton").disabled = true;
+            }
             moveNextTile(hint, 0, function () {
                 hideLoadingModal(); //khi hoàn thành di chuyển thì sẽ ẩn đi modal
             });
