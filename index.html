@@ -149,7 +149,7 @@
                     <span id="difficultyOverlay" class="city-night">- Easy -</span>
                 </div>
                 <div class="menu-item">
-                    <button id="hintButton" onclick="onClickHint()"><i class="menu-icon fas fa-exclamation glowing-txt"  title="Click to have a hint!"></i></button>
+                    <button id="hintButton" onclick="onClickHint()"><i class="menu-icon fas fa-exclamation glowing-txt" id="hintButtonIcon" title="Click to have a hint!"></i></button>
                     <button class="homeButton"><i class="menu-icon fas fa-home glowing-txt"  title="Click to come back home!"></i></button>
                     <button id="giveupButton" onclick="onClickGameOver()"><i class="menu-icon fa fa-flag glowing-txt" title="You loser!"></i></button>
                 </div>
@@ -599,16 +599,11 @@
             console.log(hint);
             if (allowHint == 0 && currentMode == CHALLENGE_MODE) {
                 document.getElementById("hintButton").disabled = true;
+                document.getElementById("hintButtonIcon").style.color = "grey";
                 return;
             }
             allowHint--;
             document.getElementById("allowHint").textContent = allowHint;
-            if(allowHint == 0){
-                document.getElementById("hintButton").disabled = true;
-                var hintButtonIcon = document.querySelector("#hintButton i");
-                hintButtonIcon.classList.remove("glowing-txt");
-                hintButtonIcon.style.color = "var(--pink)";
-            }
             moveNextTile(hint, 0, function () {
                 hideLoadingModal(); //khi hoàn thành di chuyển thì sẽ ẩn đi modal
             });
