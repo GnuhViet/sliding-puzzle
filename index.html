@@ -588,7 +588,7 @@
 
         //Gợi ý nước đi
         function onClickHint() {
-            showLoadingModal();
+            // showLoadingModal();
             let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
             let hint = solution.slice(0, eachHintMove);
             console.log(hint);
@@ -658,6 +658,7 @@
         function moveNextTile(solution, index, callback) {
             let currentEmptyIndex = emptyPos.x * gameSize + emptyPos.y;
             if (index < solution.length) {
+                showLoadingModal();
                 let hint = solution[index];
                 let move = getMove(hint)
                 moveTile(move);
