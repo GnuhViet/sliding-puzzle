@@ -96,7 +96,7 @@ var giveupButton = document.getElementById('giveupButton');
 var lostNotice = document.getElementById('lostNotice');
 
 giveupButton.addEventListener('click', function() {
-  lostCheck();
+  gameOver = true;
 });
 
 function lostCheck(){

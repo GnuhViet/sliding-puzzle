@@ -203,6 +203,7 @@
         let currentMatrix = [];
         let emptyPos = 0;
         let currentMode = CHALLENGE_MODE;
+        let gameOver = false;
 
         document.getElementById('imageLoader').addEventListener('change', handleImage, false);
         
@@ -461,6 +462,10 @@
                     return;
                 }
             }
+            if (gameOver == true){
+                lostCheck();
+                return;
+            }
             var winNotice = document.getElementById('winNotice');
             winNotice.style.display = 'block';
             var imageOverlay = document.getElementById('imageOverlay');
@@ -508,7 +513,7 @@
                 currentMove++;
                 moveLimit--;
                     if (moveLimit == -1) {
-                        lostCheck();
+                        gameOver = true;
                     }
                 setMoveLimit();
             }
@@ -650,6 +655,7 @@
 
         function onClickGameOver(){
             if (gameSize <= 3){
+                showLoadingModal();
                 let solution = solvePuzzle(defaultMatrix, currentMatrix, emptyPos, gameSize);
                 moveNextTile(solution, 0);
             }
