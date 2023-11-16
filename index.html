@@ -605,6 +605,9 @@
             document.getElementById("allowHint").textContent = allowHint;
             if(allowHint == 0){
                 document.getElementById("hintButton").disabled = true;
+                var hintButtonIcon = document.querySelector("#hintButton i");
+                hintButtonIcon.classList.remove("glowing-txt");
+                hintButtonIcon.style.color = "var(--pink)";
             }
             moveNextTile(hint, 0, function () {
                 hideLoadingModal(); //khi hoàn thành di chuyển thì sẽ ẩn đi modal
